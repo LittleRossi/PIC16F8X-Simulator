@@ -22,5 +22,47 @@
         private static byte RA4TimerLastState;
 
 
+
+
+        public static int[] GetStack()
+        {
+            return stack;
+        }
+
+        public static int GetPc()
+        {
+            return pc;
+        }
+
+        public static decimal GetRuntime()
+        {
+            return runtime;
+        }
+
+        public static decimal GetWatchdog()
+        {
+            return watchdog;
+        }
+
+        public static void ResetWatchdog()
+        {
+            watchdog = 0;
+        }
+
+        public static byte[] GetAllRegister()
+        {
+            return register;
+        }
+
+        public static byte GetRegisterW()
+        {
+            return w;
+        }
+
+        public static void SetRegisterW(byte newValue)
+        {
+            w = newValue;
+        }
+
     }
 }
