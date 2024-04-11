@@ -23,6 +23,7 @@ namespace PIC16F8X
         public MainWindow()
         {
             InitializeComponent();
+
         }
     }
 }
