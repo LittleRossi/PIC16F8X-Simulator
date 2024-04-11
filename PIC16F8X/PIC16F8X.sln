@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIC16F8X", "PIC16F8X\PIC16F8X.csproj", "{7BBC6714-7D21-4326-9597-AA6B204CF060}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7BBC6714-7D21-4326-9597-AA6B204CF060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BBC6714-7D21-4326-9597-AA6B204CF060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BBC6714-7D21-4326-9597-AA6B204CF060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BBC6714-7D21-4326-9597-AA6B204CF060}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0957811-F0E7-47B0-827B-20B142B6FAB4}
+	EndGlobalSection
+EndGlobal
