@@ -5,6 +5,10 @@
 
         public LSTFile(string path)
         {
+            // Neues LSTFile wird erzeugt, wenn LST Datei in UI ausgewählt wird
+            // Dadurch wird dieses dann direkt gesetzt in Programmspeicher und initialisiert
+
+
             // LST File einlesen
             // Filtern nach relevanten Zeilen
             // prüfen ob Label vorhanden
