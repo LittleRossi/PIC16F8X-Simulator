@@ -1,4 +1,4 @@
-﻿namespace PIC16F8X.Data
+﻿namespace PIC16F8X.DataModel
 {
     public static class Fields
     {
@@ -20,6 +20,9 @@
         private static byte RBIntLastState;
         private static byte RB0IntLastState;
         private static byte RA4TimerLastState;
+
+        //Integrety
+        private static bool ProgrammInitialized;
 
 
 

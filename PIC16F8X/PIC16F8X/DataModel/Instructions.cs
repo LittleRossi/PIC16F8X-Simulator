@@ -1,4 +1,4 @@
-﻿namespace PIC16F8X.Data
+﻿namespace PIC16F8X.DataModel
 {
     public static class Instructions
     {
