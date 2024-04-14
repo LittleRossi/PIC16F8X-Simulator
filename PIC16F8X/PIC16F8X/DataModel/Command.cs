@@ -9,8 +9,8 @@ namespace PIC16F8X.DataModel
 
         public Command(string hex)
         {
-            high = (byte)HelpFunctions.ConvertHexToInt(hex.Substring(0, 2)); //First two Digits of 4 Char Hex
-            low = (byte)HelpFunctions.ConvertHexToInt(hex.Substring(2, 2)); //Last two Digits of 4 Char Hex
+            high = (byte)HelpFunctions.ConvertHexToInt(hex.Substring(0, 2)); //First two Digits of 4 Char Hex (xx00)
+            low = (byte)HelpFunctions.ConvertHexToInt(hex.Substring(2, 2)); //Last two Digits of 4 Char Hex (00xx)
         }
 
         public Command(byte high, byte low)
