@@ -12,16 +12,18 @@
 
         public static Instruction InstructionDecoder(Command command)
         {
-            // Gets the command High- and Lowbyte and looks up for the matching Instruction and returns the matching Enum entry
-            // The OpCode of the Instructions are out of the Datasheet. In Some Cases you also need to check the lowbyte to determ the
-            // correct instruction because the highbyte is identical.
-
-            // !!!Important!!!
-            // For some operations a logical AND operation with a specific mask is important to make sure that unessecary bits are 0
-            // The important bits stay the same
-            // a.e.: & 60 (111100): 01 00bb => 01 0000
-            // => So thats why we need to & number the Highbyte before checking the switch
-
+            //############################################################################################################################
+            //# Gets the command High- and Lowbyte and looks up for the matching Instruction and returns the matching Enum entry         #
+            //# The OpCode of the Instructions are out of the Datasheet. In Some Cases you also need to check the lowbyte to determ the  #
+            //# correct instruction because the highbyte is identical.                                                                   #
+            //#                                                                                                                          #
+            //# !!!Important!!!                                                                                                          #
+            //# For some operations a logical AND operation with a specific mask is important to make sure that unessecary bits are 0    #
+            //# The important bits stay the same                                                                                         #
+            //# a.e.: & 60 (111100): 01 00bb => 01 0000                                                                                  #
+            //#                                                                                                                          #
+            //# => So thats why we need to & number the Highbyte before checking the switch                                              #
+            //############################################################################################################################
 
 
 
