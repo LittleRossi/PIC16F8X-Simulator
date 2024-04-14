@@ -24,7 +24,7 @@ namespace PIC16F8X.DataModel
         private static byte RB0IntLastState;
         private static byte RA4TimerLastState;
 
-        //Integrety
+        //Integrity
         private static bool ProgrammInitialized;
 
 
