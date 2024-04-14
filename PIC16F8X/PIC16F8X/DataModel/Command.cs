@@ -1,17 +1,32 @@
-﻿namespace PIC16F8X.DataModel
+﻿using PIC16F8X.helpfunctions;
+
+namespace PIC16F8X.DataModel
 {
-    public static class Command
+    public class Command
     {
+        private readonly byte high; //high-byte of Command
+        private readonly byte low;  //low-byte of Command
 
-        //High-Byte
-        //Low-Byte
+        public Command(string hex)
+        {
+            high = (byte)HelpFunctions.ConvertHexToInt(hex.Substring(0, 2)); //First two Digits of 4 Char Hex
+            low = (byte)HelpFunctions.ConvertHexToInt(hex.Substring(2, 2)); //Last two Digits of 4 Char Hex
+        }
 
-        //Konstruktor mit 4 hex ziffern
-        // diese dann in low und high konvertieren
-        // Mit hexToInt converter
+        public Command(byte high, byte low)
+        {
+            this.high = high;
+            this.low = low;
+        }
 
+        public byte GetHighByte()
+        {
+            return high;
+        }
 
-        // EInbauen dass ich in Fields ein List aus command habe
-
+        public byte GetLowByte()
+        {
+            return low;
+        }
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace PIC16F8X.DataModel
+﻿using System.Collections.Generic;
+
+namespace PIC16F8X.DataModel
 {
     public static class Fields
     {
         //ToDo: ProgrammCode with List of Class Command
+        private static List<Command> programm = new List<Command>();
 
         //Data Register
         private static byte[] register = new byte[256];
