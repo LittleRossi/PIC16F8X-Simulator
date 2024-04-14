@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PIC16F8X.DataModel
 {
     public static class Fields
     {
         //ToDo: ProgrammCode with List of Class Command
-        private static List<Command> programm = new List<Command>();
+        private static List<Command> program = new List<Command>();
 
         //Data Register
         private static byte[] register = new byte[256];
@@ -29,6 +30,28 @@ namespace PIC16F8X.DataModel
 
 
 
+
+
+
+
+
+        #region Getter and Setter
+        public static void SetProgramm(List<string> commandList)
+        {
+            //Create a list of Commands out of list of read hexadecimal commands
+
+            if (commandList == null) throw new ArgumentNullException();
+
+            program = new List<Command>();
+
+            for (int i = 0; i < commandList.Count; i++)
+            {
+                Command line = new Command(commandList[i]);
+                program.Add(line);
+            }
+
+            ProgrammInitialized = true;
+        }
 
         public static int[] GetStack()
         {
@@ -70,5 +93,6 @@ namespace PIC16F8X.DataModel
             w = newValue;
         }
 
+        #endregion
     }
 }
