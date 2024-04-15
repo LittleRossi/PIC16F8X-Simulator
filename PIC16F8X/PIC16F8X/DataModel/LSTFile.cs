@@ -1,15 +1,47 @@
-﻿using System.Collections.ObjectModel;
-using System.DirectoryServices.ActiveDirectory;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace PIC16F8X.DataModel
 {
     class LSTFile
     {
         readonly ObservableCollection<SourceLine> sourceLines = new ObservableCollection<SourceLine>();
+        readonly int[] linesWithCommands;
+        int LastHighlightedLineIndex = 0;
 
         public LSTFile(string path)
         {
-            
+            List<string> commands = new List<string>();
+            List<int> linesWithCommands = new List<int>();
+
+            string line;
+            int lineCounter = 0;
+
+
+            System.IO.StreamReader file = new System.IO.StreamReader(@path, System.Text.Encoding.UTF8);
+
+            while ((line = file.ReadLine()) != null)
+            {
+                // Check if line contains a command
+
+
+                // check if line contains a label
+
+
+                // remove all dublicate white spaces
+
+                // check if line contains hex decimal command
+
+
+                // Fill linenumber and command variable
+
+                // add line to list of SourceLines
+            }
+
+
+
+
+
             // Neues LSTFile wird erzeugt, wenn LST Datei in UI ausgewählt wird
             // Dadurch wird dieses dann direkt gesetzt in Programmspeicher und initialisiert
 
