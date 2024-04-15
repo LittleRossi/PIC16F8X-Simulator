@@ -24,6 +24,38 @@ namespace PIC16F8X.DataModel
 
     class SourceLine : ObservableObject
     {
+        public string LineNumber { get; set; }
+        public string Label { get; set; }
+        public string Command { get; set; }
+        public string Comment { get; set; }
 
+        public bool HasCommand { get; set; }
+
+        private bool active;
+
+        public bool Active // public property to check if line is active and send notification by setting it active to execute the line
+        {
+            get { return active; }
+            set { SetAndNotify(ref active, value, () => Active); }
+        }
+
+        private bool breakpoint;
+        public bool Breakpoint // public property to check for breakpoints and send notifications by setting a breakpoint
+        {
+            get { return breakpoint; }
+            set { SetAndNotify(ref breakpoint, value, () => Breakpoint); }
+        }
+
+        public SourceLine (string lineNumber, string label, string command, string comment, bool hasCommand)
+        {
+            breakpoint = false; //default we dont have a breakpoint by reading the file, breakpoints get set in the UI
+            LineNumber = lineNumber;
+            Label = label;
+            Command = command;
+            Comment = comment;
+            HasCommand = hasCommand;
+            active = false; //default all lines are not active, we set them to active when we execute them
+
+        }
     }
 }
