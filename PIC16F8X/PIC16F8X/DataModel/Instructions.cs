@@ -10,6 +10,7 @@
             UNKNOWN
         }
 
+        #region Instruction Decoder
         public static Instruction InstructionDecoder(Command command)
         {
             //############################################################################################################################
@@ -30,22 +31,23 @@
             //BYTE-ORIENTED FILE REGISTER OPERATIONS
             switch (command.GetHighByte())
             {
-                case 7:  return Instruction.ADDWF;
-                case 5:  return Instruction.ANDWF;
-                case 1:  if ((command.GetLowByte() & 128) == 1) return Instruction.CLRF;
-                         else return Instruction.CLRW;
-                case 9:  return Instruction.COMF;
-                case 3:  return Instruction.DECF;
+                case 7: return Instruction.ADDWF;
+                case 5: return Instruction.ANDWF;
+                case 1:
+                    if ((command.GetLowByte() & 128) == 1) return Instruction.CLRF;
+                    else return Instruction.CLRW;
+                case 9: return Instruction.COMF;
+                case 3: return Instruction.DECF;
                 case 11: return Instruction.DECFSZ;
                 case 10: return Instruction.INCF;
                 case 15: return Instruction.INCFSZ;
-                case 4:  return Instruction.IORWF;
-                case 8:  return Instruction.MOVF;
+                case 4: return Instruction.IORWF;
+                case 8: return Instruction.MOVF;
                 case 13: return Instruction.RLF;
                 case 12: return Instruction.RRF;
-                case 2:  return Instruction.SUBWF;
+                case 2: return Instruction.SUBWF;
                 case 14: return Instruction.SWAPF;
-                case 6:  return Instruction.XORWF;
+                case 6: return Instruction.XORWF;
             }
 
             //LITERAL AND CONTROL OPERATIONS
@@ -54,9 +56,10 @@
                 case 57: return Instruction.ANDLW;
 
                 // the Highbyte is all the same, so we need to look at the Lowbyte
-                case 0:  if (command.GetLowByte() == 100) return Instruction.CLRWDT;
-                    else if (command.GetLowByte() == 9)  return Instruction.RETFIE;
-                    else if (command.GetLowByte() == 8)  return Instruction.RETURN;
+                case 0:
+                    if (command.GetLowByte() == 100) return Instruction.CLRWDT;
+                    else if (command.GetLowByte() == 9) return Instruction.RETFIE;
+                    else if (command.GetLowByte() == 8) return Instruction.RETURN;
                     else if (command.GetLowByte() == 99) return Instruction.SLEEP;
                     else if ((command.GetLowByte() & 159) == 0) return Instruction.NOP;
                     else return Instruction.MOVWF;
@@ -98,5 +101,92 @@
 
             return Instruction.UNKNOWN; //return unknown if instructiondecoder can´t find a matching case
         }
+        #endregion
+
+        #region Instruction Implementation
+
+        //BYTE-ORIENTED FILE REGISTER OPERATIONS
+
+        public static void ADDWF (Command com)
+        {
+            // logical & with bitmask to get argument
+        }
+
+        public static void ANDWF (Command com) { }
+
+        public static void CLRF (Command com) { }
+
+        public static void CLRW (Command com) { }
+
+        public static void COMF (Command com) { }
+
+        public static void DECF (Command com) { }
+
+        public static void DECFSZ (Command com) { }
+
+        public static void INCF (Command com) { }
+
+        public static void INCFSZ (Command com) { }
+
+        public static void IORWF (Command com) { }
+
+        public static void MOVF (Command com) { }
+
+        public static void MOVWF (Command com) { }
+
+        public static void NOP (Command com) { }
+
+        public static void RLF (Command com) { }
+
+        public static void RRF (Command com) { }
+
+        public static void SUBWF (Command com) { }
+
+        public static void SWAPF (Command com) { }
+
+        public static void XORWF (Command com) { }
+
+
+        //BIT-ORIENTED FILE REGISTER OPERATIONS
+
+        public static void BCF (Command com) { }
+        
+        public static void BSF (Command com) { }
+
+        public static void BTFSC (Command com) { }
+
+        public static void BTFSS (Command com) { }
+
+
+        //LITERAL AND CONTROL OPERATIONS
+
+        public static void ADDLW (Command com) { }
+
+        public static void ANDLW (Command com) { }
+
+        public static void CALL (Command com) { }
+
+        public static void CLRWDT (Command com) { }
+
+        public static void GOTO (Command com) { }
+
+        public static void IORLW (Command com) { }
+
+        public static void MOVLW (Command com) { }
+
+        public static void RETFIE (Command com) { }
+
+        public static void RETLW (Command com) { }
+        
+        public static void RETURN (Command com) { }
+
+        public static void SLEEP (Command com) { }
+
+        public static void SUBLW (Command com) { }
+
+        public static void XORLW (Command com) { }
+
+        #endregion
+
     }
 }
