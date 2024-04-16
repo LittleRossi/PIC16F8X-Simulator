@@ -138,6 +138,12 @@ namespace PIC16F8X.DataModel
                 _ => register[Convert.ToInt16(address)], //when address is not 0x00
             };
         }
+        public static bool GetRegisterBit(byte address, int bit)
+        {
+            // we take the value of the register and shift it "bit" times right until the bit is on the lowest bit position
+            // Now we can & it with 0000 0001 and check if the result is 1 => if its one, the bit is set => we return true
+            return (1 == ((GetRegister(address) >> bit ) & 1));
+        }
         public static void SetPCFromBytes(byte bHigh, byte bLow)
         {
             // We need to get the value of PCLATH, in order to get the correct PC value
@@ -152,6 +158,34 @@ namespace PIC16F8X.DataModel
                 return byteToModify |= mask; // Change to true => logical OR
             else
                 return byteToModify &= (byte)~mask; // Change to false => logical AND with negated mask (~ negates the mask)
+        }
+        public static byte BankAddressResolution(byte address)
+        {
+            // Check which bank is selected
+            if (GetRegisterBit(Registers.STATUS, Flags.Status.RP0)) // Check if RP0 is set
+            {
+                //RP0 set => bank 1 is selected
+                return (byte)(address + 0x80); // we add 0x80 in order to get to the correct address in bank1
+            }
+            if (address >= register.Length)
+            {
+                throw new IndexOutOfRangeException(); // throw error is address is out of range
+            }
+
+            //RP0 not set => bank0 selected
+            return address;
+        }
+        public static void DirectionalWrite(byte d, byte f, byte res)
+        {
+            // Check Destinationbit to know if we want to write result in w register or to address f
+            if(d == 0)
+            {
+                SetRegisterW(res); // DestinationBit = 0 => result in w register
+            }
+            else if (d == 128)
+            {
+                SetRegister(BankAddressResolution(f), res); // DestinationBit = 1 => result in f register
+            }
         }
         #endregion
 
