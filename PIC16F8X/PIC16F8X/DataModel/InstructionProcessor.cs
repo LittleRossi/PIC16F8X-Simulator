@@ -62,7 +62,6 @@
 
             Fields.DirectionalWrite(d, f, result);
         }
-
         public static void DECF(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -75,7 +74,6 @@
 
             Fields.DirectionalWrite(d, f, result);
         }
-
         public static void DECFSZ(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -92,8 +90,7 @@
                 //ToDo:
                 // CycleSkip!!!
             }
-        }
-
+        } //ToDo: SkipCycle
         public static void INCF(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -106,7 +103,6 @@
 
             Fields.DirectionalWrite(d, f, result);
         }
-
         public static void INCFSZ(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -126,8 +122,7 @@
 
 
             Fields.DirectionalWrite(d, f, result);
-        }
-
+        } //ToDo: SkipCycle
         public static void IORWF(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -139,7 +134,6 @@
             Flags.CheckZFlag(result);
 
             Fields.DirectionalWrite(d, f, result);
-
         }
 
         public static void MOVF(Command com) { }

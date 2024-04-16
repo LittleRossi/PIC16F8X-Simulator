@@ -1,0 +1,4 @@
+﻿ToDo:
+- UI
+- SkipCycle in InstructionProcessor
+- Interrupts
