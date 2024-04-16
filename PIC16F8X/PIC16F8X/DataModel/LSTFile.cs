@@ -145,7 +145,6 @@ namespace PIC16F8X.DataModel
             Comment = comment;
             HasCommand = hasCommand;
             active = false; //default all lines are not active, we set them to active when we execute them
-
         }
     }
 }

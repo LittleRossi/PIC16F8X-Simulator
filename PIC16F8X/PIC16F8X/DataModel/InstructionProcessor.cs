@@ -18,7 +18,6 @@
             // write result in register
             Fields.DirectionalWrite(d, f, result);
         }
-
         public static void ANDWF(Command com)
         {
             // ANDWF Encoding: LowByte: (dfff ffff)
@@ -31,7 +30,6 @@
             // write result in register
             Fields.DirectionalWrite(d, f, result);
         }
-
         public static void CLRF(Command com)
         {
             // isolate f in Lowbyte by logical AND with 0111 1111
@@ -43,7 +41,6 @@
             // Set the Zeroflag
             Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true);
         }
-
         public static void CLRW(Command com)
         {
             // Clear w register
@@ -52,7 +49,6 @@
             // Set the Zeroflag
             Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true);
         }
-
         public static void COMF(Command com) { }
 
         public static void DECF(Command com) { }
