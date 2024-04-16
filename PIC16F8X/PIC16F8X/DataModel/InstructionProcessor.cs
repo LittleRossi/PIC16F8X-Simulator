@@ -135,14 +135,35 @@
 
             Fields.DirectionalWrite(d, f, result);
         }
+        public static void MOVF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
 
-        public static void MOVF(Command com) { }
+            Flags.CheckZFlag(Fields.GetRegister(Fields.BankAddressResolution(f)));
 
-        public static void MOVWF(Command com) { }
+            if (d != 128)
+            {
+                //If Destinationbit is not set => store in W Register
+                Fields.SetRegisterW(Fields.GetRegister(Fields.BankAddressResolution(f)));
+            }
+        }
+        public static void MOVWF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
 
-        public static void NOP(Command com) { }
+            // get value of w register and set it to f register
+            Fields.SetRegister(Fields.BankAddressResolution(f), Fields.GetRegisterW());
+        }
+        public static void NOP(Command com)
+        {
+            //No Operation instruction
+        }
 
-        public static void RLF(Command com) { }
+        public static void RLF(Command com)
+        {
+
+        }
 
         public static void RRF(Command com) { }
 
