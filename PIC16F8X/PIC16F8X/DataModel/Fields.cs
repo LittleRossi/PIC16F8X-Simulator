@@ -20,6 +20,13 @@ namespace PIC16F8X.DataModel
         private static int clockspeed = 4000000;  //in Hz
         private static bool sleeping;
 
+        //Watchdog
+        private static readonly int watchdogLimit = 18000; //18ms watchdog time
+        private static bool watchDogEnabled;
+
+        // Watchdog postscaler and Timer prescaler
+        private static int prePostscalerRatio, prePostscaler;
+
         //Interrupts
         private static byte RBIntLastState;
         private static byte RB0IntLastState;
@@ -31,7 +38,112 @@ namespace PIC16F8X.DataModel
 
 
 
+        public static void ResetData()
+        {
+            sleeping = false;
+            pc = 0;
+            w = 0;
+            register = new byte[256];
+            stack = new int[8];
+            stackPointer = 0;
+            runtime = 0;
+            watchdog = 0;
 
+
+
+        }
+
+        #region Register Actions
+        public static void SetRegister(byte adress, byte data)
+        {
+            // Set the data in the correct Register
+            register[Convert.ToInt16(adress)] = data;
+
+            //Handling special functions
+            switch (adress)
+            {
+                case 0x00: //indirect memory access => Using FSR
+                    register[GetRegister(Registers.FSR)] = data;
+                    break;
+                case 0x01:
+                    ResetPrePostScaler();
+                    //ToDo: handle TMR0
+                    break;
+                case 0x02: // PCL on Bank0 and Bank1
+                    register[Convert.ToInt16(0x82)] = data;
+                    //PCL is split to PCL on bank0 and bank1 and PCLATH, which is a 5 Bit Write buffer of the PC
+                    SetPCFromBytes(GetRegister(Registers.PCLATH), GetRegister(Registers.PCL));
+                    break;
+                case 0x03: // STATUS Register on Bank0 and Bank1
+                    register[Convert.ToInt16(0x83)] = data; // STATUS address on bank1
+                    break;
+                case 0x04: // FSR on Bank0 and Bank1
+                    register[Convert.ToInt16(0x84)] = data; // FSR address on bank1
+                    break;
+
+                case 0x05:
+                    //ToDo: PORTA Latch (TRISA)
+                    break;
+                case 0x06:
+                    //ToDo: PORTB Latch (TRISB)
+                    break;
+
+                case 0x0A: //PCLATH on bank0 and bank1
+                    register[Convert.ToInt16(0x8A)] = data; //PCLATH address on bank1
+                    break;
+                case 0x0B: //INTCON on bank0 and bank1
+                    register[Convert.ToInt16(0x8B)] = data; //INTCON address on bank1
+                    break;
+
+                case 0x80: //indirect memory access => Using FSR on bank1
+                    register[GetRegister(Registers.FSR)] = data; // FST address on bank0
+                    break;
+                case 0x81: //OPTION register on bank1
+                    SetPrePostscalerRatio();
+                    break;
+                case 0x82: //PCL on bank1
+                    register[Convert.ToInt16(0x02)] = data;
+                    SetPCFromBytes(GetRegister(Registers.PCLATH), GetRegister(Registers.PCL));
+                    break;
+                case 0x83: //STATUS on bank1
+                    register[Convert.ToInt16(0x03)] = data;
+                    break;
+                case 0x84: //FSR on bank1
+                    register[Convert.ToInt16(0x04)] = data;
+                    break;
+                case 0x8A: //PCLATH on bank1
+                    register[Convert.ToInt16(0x0A)] = data;
+                    break;
+                case 0x8B: //INTCON on bank1
+                    register[Convert.ToInt16(0x0B)] = data;
+                    break;
+            }
+
+        }
+        public static byte GetRegister(byte address)
+        {
+            return address switch
+            {
+                0x00 => register[GetRegister(Registers.FSR)], //0x00 is INDF Register and uses content of FSR
+                _ => register[Convert.ToInt16(address)], //when address is not 0x00
+            };
+        }
+
+        public static void SetPCFromBytes(byte bHigh, byte bLow)
+        {
+            // We need to get the value of PCLATH, in order to get the correct PC value
+            pc = BitConverter.ToUInt16(new byte[] { bLow, bHigh }, 0); // LittleEndian, (lowbyte first, then highbyte)
+        }
+        #endregion
+
+
+        #region Pre- and Postscaler
+        public static void ResetPrePostScaler()
+        {
+            prePostscaler = 0;
+        }
+        public static void SetPrePostscalerRatio() { }
+        #endregion
 
 
 

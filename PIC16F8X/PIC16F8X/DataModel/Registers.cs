@@ -2,7 +2,7 @@
 {
     public static class Registers
     {
-        //Bank 1
+        //Bank 0
         public static readonly byte INDF = 0x00;
         public static readonly byte TRM0 = 0x01;
         public static readonly byte PCL = 0x02;
@@ -15,7 +15,7 @@
         public static readonly byte PCLATH = 0x0A;
         public static readonly byte INTCON = 0x0B;
 
-        //Bank 2
+        //Bank 1
         public static readonly byte OPTION = 0x81;
         public static readonly byte PCL2 = 0x82;
         public static readonly byte TRISA = 0x85;
