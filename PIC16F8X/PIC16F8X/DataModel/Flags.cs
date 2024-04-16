@@ -40,5 +40,18 @@
             public static readonly int EEIE = 6;
             public static readonly int GIE = 7;
         }
+
+        public static void CheckZFlag(byte res)
+        {
+            // Check if result of operation is 0
+            if (res == 0)
+            {
+                Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true); // result 0 => Set ZeroFlag
+            }
+            else
+            {
+                Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, false); // result not 0 => Reset ZeroFlag
+            }
+        }
     }
 }

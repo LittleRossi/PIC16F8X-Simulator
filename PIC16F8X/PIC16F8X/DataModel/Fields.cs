@@ -143,7 +143,7 @@ namespace PIC16F8X.DataModel
             // We need to get the value of PCLATH, in order to get the correct PC value
             pc = BitConverter.ToUInt16(new byte[] { bLow, bHigh }, 0); // LittleEndian, (lowbyte first, then highbyte)
         }
-        public static byte SetSingleBit(byte byteToModify, int bitIndex, bool value)
+        private static byte SetSingleBit(byte byteToModify, int bitIndex, bool value)
         {
             // We create a Mask with 0 and one value 1 on the bit that we want to change
             byte mask = (byte)(1 << bitIndex); //create a mask and shift 1 as far left as bitIndex indicates
