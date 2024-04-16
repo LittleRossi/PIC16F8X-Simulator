@@ -37,10 +37,10 @@ namespace PIC16F8X
 
             if (dialog.ShowDialog() == true)
             {
-                Reset(); // reset all Data
+                Reset(); // reset all Data and update UI
                 LSTFile lSTFile = new LSTFile(dialog.FileName); // read and initialise programm in programmstorage as list of Commands
                 
-                //ToDo: Programm in ProgrammView in UI anzeigen
+                //ToDo: show programm in UI
             }
         }
 
@@ -48,7 +48,11 @@ namespace PIC16F8X
         #region User interaction functions
         private void Reset()
         {
-            // ToDo
+            Fields.ResetData();
+            // ToDo:
+            //  - stop
+            //  - UI update after resetting the data
+
         }
         #endregion
 
