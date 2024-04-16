@@ -190,6 +190,23 @@ namespace PIC16F8X.DataModel
         #endregion
 
 
+        #region Programmcounter
+        public static void IncreasePC()
+        {
+            if (pc < 1023) pc++;
+            else pc = 0;
+
+            SetPCLfromPC();
+        }
+        private static void SetPCLfromPC()
+        {
+            //We need to also set the PCL Register which represents the lower 8 Bits of the PC
+            byte pcl = BitConverter.GetBytes(pc)[0];
+            register[Registers.PCL] = pcl;
+            register[Registers.PCL2] = pcl;
+        }
+        #endregion
+
         #region Pre- and Postscaler
         public static void ResetPrePostScaler()
         {

@@ -49,17 +49,98 @@
             // Set the Zeroflag
             Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true);
         }
-        public static void COMF(Command com) { }
+        public static void COMF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
 
-        public static void DECF(Command com) { }
+            // get value of register and build the complement through negating
+            byte result = (byte)~(Fields.GetRegister(Fields.BankAddressResolution(f)));
 
-        public static void DECFSZ(Command com) { }
+            // set Zeroflag if result = 0
+            Flags.CheckZFlag(result);
 
-        public static void INCF(Command com) { }
+            Fields.DirectionalWrite(d, f, result);
+        }
 
-        public static void INCFSZ(Command com) { }
+        public static void DECF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
 
-        public static void IORWF(Command com) { }
+            // get the value out of the Register and decrement it
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) - 1);
+
+            Flags.CheckZFlag(result);
+
+            Fields.DirectionalWrite(d, f, result);
+        }
+
+        public static void DECFSZ(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
+
+            // get the value out of the Register and decrement it
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) - 1);
+
+            if(result == 0)
+            {
+                // if Result = 0 we skip the next instruction
+                Fields.IncreasePC();
+
+                //ToDo:
+                // CycleSkip!!!
+            }
+        }
+
+        public static void INCF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
+
+            // get the value out of the Register and increments it
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) + 1);
+
+            Flags.CheckZFlag(result);
+
+            Fields.DirectionalWrite(d, f, result);
+        }
+
+        public static void INCFSZ(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
+
+            // get the value out of the Register and decrement it
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) + 1);
+
+            if (result == 0)
+            {
+                // if Result = 0 we skip the next instruction
+                Fields.IncreasePC();
+
+                //ToDo:
+                // CycleSkip!!!
+            }
+
+
+            Fields.DirectionalWrite(d, f, result);
+        }
+
+        public static void IORWF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
+
+            // ORs the value in f register with the w register
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) | Fields.GetRegisterW());
+
+            Flags.CheckZFlag(result);
+
+            Fields.DirectionalWrite(d, f, result);
+
+        }
 
         public static void MOVF(Command com) { }
 
