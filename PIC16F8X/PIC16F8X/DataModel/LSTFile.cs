@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace PIC16F8X.DataModel
 {
@@ -11,46 +12,76 @@ namespace PIC16F8X.DataModel
 
         public LSTFile(string path)
         {
-            List<string> commands = new List<string>();
+            List<string> hexadecimalCommand = new List<string>();
             List<int> linesWithCommands = new List<int>();
 
             string line;
-            int lineCounter = 0;
+            int lineCounter = 0; //Index of Commands in List
 
 
             System.IO.StreamReader file = new System.IO.StreamReader(@path, System.Text.Encoding.UTF8);
 
             while ((line = file.ReadLine()) != null)
             {
-                // Check if line contains a command
+                // Check if line contains a comment
+                string comment = "";
+                string[] lineCommentSplit = line.Split(";");
+                
+                if (lineCommentSplit.Length > 1)
+                {
+                    comment = lineCommentSplit[1];
+                    line = lineCommentSplit[0];
+                }
+
+                //Check if line contains label
+                string label;
+                bool hasLabel = false;
+                label = line.Substring(27).Split(" ")[0]; // labels always begin at the 28th char in a LST File
+
+                if (label != "") hasLabel = true;
 
 
-                // check if line contains a label
+                // Split the lines into every part and removing all dublicated whitespaces
+                string[] lineComponents = line.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
 
 
-                // remove all dublicate white spaces
 
-                // check if line contains hex decimal command
+                // Check if the line contains a hexadecimal Command
+                bool hasCommand = false;
+
+                if (!char.IsWhiteSpace(line, 0)) //Lines with a Command always start with a character as first char
+                {
+                    hexadecimalCommand.Add(lineComponents[1]); // the actual hexadecimal command is in the second row
+                    lineComponents = lineComponents.Skip(2).ToArray(); // Skipt the first two parts, because we already parsed them
+                    linesWithCommands.Add(lineCounter); // add the index of the line with a command
+                    hasCommand = true;
+                }
 
 
-                // Fill linenumber and command variable
+                // Fill LineNumber and text-command
 
-                // add line to list of SourceLines
+                if (lineComponents.Length > 0)
+                {
+                    string lineNumber = lineComponents[0];
+                    string textCommand = "";
+
+                    if (lineComponents.Length > 1)
+                    {
+                        textCommand = string.Join(" ", lineComponents.Skip(hasLabel ? 2 : 1).ToArray()); // If line contains label we need to skip two lines, otherwise we only skip the linenumber
+                    }
+
+                    // Add the current line to the sourceLines
+                    SourceLine currentLine = new SourceLine(lineNumber, label, textCommand, comment, hasCommand);
+                    sourceLines.Add(currentLine);
+                }
+                lineCounter++;
             }
+            file.Close();
 
 
+            this.linesWithCommands = linesWithCommands.ToArray();
 
-
-
-            // Neues LSTFile wird erzeugt, wenn LST Datei in UI ausgewählt wird
-            // Dadurch wird dieses dann direkt gesetzt in Programmspeicher und initialisiert
-
-
-            // LST File einlesen
-            // Filtern nach relevanten Zeilen
-            // prüfen ob Label vorhanden
-            // prüfen nach hexadecimal Command => In liste von String
-            // Aus String liste der Commands SetProgramm() aufrufen und dort die Liste übergeben um das Programm zu initialisieren
+            DataModel.Fields.SetProgramm(hexadecimalCommand);
         }
     }
 
