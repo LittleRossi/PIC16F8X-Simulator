@@ -38,6 +38,9 @@ namespace PIC16F8X.DataModel
 
 
 
+
+
+        #region Register Actions
         public static void ResetData()
         {
             sleeping = false;
@@ -57,15 +60,13 @@ namespace PIC16F8X.DataModel
 
             SetPrePostscalerRatio();
         }
-
-        #region Register Actions
-        public static void SetRegister(byte adress, byte data)
+        public static void SetRegister(byte address, byte data)
         {
             // Set the data in the correct Register
-            register[Convert.ToInt16(adress)] = data;
+            register[Convert.ToInt16(address)] = data;
 
             //Handling special functions
-            switch (adress)
+            switch (address)
             {
                 case 0x00: //indirect memory access => Using FSR
                     register[GetRegister(Registers.FSR)] = data;
@@ -125,6 +126,10 @@ namespace PIC16F8X.DataModel
             }
 
         }
+        public static void SetSingleRegisterBit(byte address, int bit, bool value)
+        {
+            SetRegister(address, SetSingleBit(GetRegister(address), bit, value));
+        }
         public static byte GetRegister(byte address)
         {
             return address switch
@@ -133,11 +138,20 @@ namespace PIC16F8X.DataModel
                 _ => register[Convert.ToInt16(address)], //when address is not 0x00
             };
         }
-
         public static void SetPCFromBytes(byte bHigh, byte bLow)
         {
             // We need to get the value of PCLATH, in order to get the correct PC value
             pc = BitConverter.ToUInt16(new byte[] { bLow, bHigh }, 0); // LittleEndian, (lowbyte first, then highbyte)
+        }
+        public static byte SetSingleBit(byte byteToModify, int bitIndex, bool value)
+        {
+            // We create a Mask with 0 and one value 1 on the bit that we want to change
+            byte mask = (byte)(1 << bitIndex); //create a mask and shift 1 as far left as bitIndex indicates
+
+            if (value)
+                return byteToModify |= mask; // Change to true => logical OR
+            else
+                return byteToModify &= (byte)~mask; // Change to false => logical AND with negated mask (~ negates the mask)
         }
         #endregion
 
