@@ -8,12 +8,41 @@
 
         public static void ADDWF(Command com)
         {
-            // logical & with bitmask to get argument
+            // ADDWF Encoding: LowByte: (dfff ffff)
+            byte d = (byte)(com.GetLowByte() & 128);  // filter destination bit with mask (1000 0000)
+            byte f = (byte)(com.GetLowByte() & 127); // filter f byte with mask (0111 1111)
+
+            // perform Add
+            byte result = ArithmeticLogicUnit.BitwiseAdd( Fields.GetRegisterW(), Fields.GetRegister(Fields.BankAddressResolution(f) ));
+
+            // write result in register
+            Fields.DirectionalWrite(d, f, result);
         }
 
-        public static void ANDWF(Command com) { }
+        public static void ANDWF(Command com)
+        {
+            // ANDWF Encoding: LowByte: (dfff ffff)
+            byte d = (byte)(com.GetLowByte() & 128);  // filter destination bit with mask (1000 0000)
+            byte f = (byte)(com.GetLowByte() & 127); // filter f byte with mask (0111 1111)
 
-        public static void CLRF(Command com) { }
+            // perform AND
+            byte result = (byte)(Fields.GetRegisterW() & Fields.GetRegister(Fields.BankAddressResolution(f)));
+
+            // write result in register
+            Fields.DirectionalWrite(d, f, result);
+        }
+
+        public static void CLRF(Command com)
+        {
+            // isolate f in Lowbyte by logical AND with 0111 1111
+            byte f = (byte)(com.GetLowByte() & 127);
+
+            // Clear register by setting it to 0
+            Fields.SetRegister(Fields.BankAddressResolution(f), 0);
+
+            // Set the Zeroflag
+            Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true);
+        }
 
         public static void CLRW(Command com) { }
 
