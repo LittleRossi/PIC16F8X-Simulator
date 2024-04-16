@@ -13,7 +13,7 @@ namespace PIC16F8X.DataModel
         public LSTFile(string path)
         {
             List<string> hexadecimalCommand = new List<string>();
-            List<int> linesWithCommands = new List<int>();
+            List<int> linesWithCommands = new List<int>(); //List of all indexes, that include a command
 
             string line;
             int lineCounter = 0; //Index of Commands in List
@@ -83,7 +83,34 @@ namespace PIC16F8X.DataModel
 
             DataModel.Fields.SetProgramm(hexadecimalCommand);
         }
+
+
+        public void HighlightLine(int pc)
+        {
+            sourceLines[GetSourceLineIndexFromPC(LastHighlightedLineIndex)].Active = false; //Set the current line to not active
+            sourceLines[GetSourceLineIndexFromPC(pc)].Active = true; // set the next line to active
+            LastHighlightedLineIndex = pc;
+        }
+        
+        public ObservableCollection<SourceLine> GetSourceLines()
+        {
+            return sourceLines;
+        }
+
+        public int GetSourceLineIndexFromPC(int pc)
+        {
+            // We need to check that, because there can be lines without commands
+            if (pc < linesWithCommands.Length) return linesWithCommands[pc]; 
+            else return -1;
+        }
+
+        public bool LineHasBreakpoint(int pc)
+        {
+            return sourceLines[GetSourceLineIndexFromPC(pc)].Breakpoint; //Return if a line has a breakpoint
+        }
     }
+
+    
 
     class SourceLine : ObservableObject
     {
@@ -96,7 +123,7 @@ namespace PIC16F8X.DataModel
 
         private bool active;
 
-        public bool Active // public property to check if line is active and send notification by setting it active to execute the line
+        public bool Active // Indicates which line is currently active and gets executed
         {
             get { return active; }
             set { SetAndNotify(ref active, value, () => Active); }

@@ -50,8 +50,6 @@ namespace PIC16F8X.DataModel
                 program.Add(line);
             }
 
-            Console.WriteLine(program);
-
             ProgrammInitialized = true;
         }
 
