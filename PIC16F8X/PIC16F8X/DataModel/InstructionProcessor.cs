@@ -44,7 +44,14 @@
             Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true);
         }
 
-        public static void CLRW(Command com) { }
+        public static void CLRW(Command com)
+        {
+            // Clear w register
+            Fields.SetRegisterW(0);
+
+            // Set the Zeroflag
+            Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.Z, true);
+        }
 
         public static void COMF(Command com) { }
 
