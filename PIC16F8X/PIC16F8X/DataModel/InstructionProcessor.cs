@@ -294,7 +294,6 @@
             byte result = ArithmeticLogicUnit.BitwiseAdd(Fields.GetRegisterW(), k);
             Fields.SetRegisterW(result);
         }
-
         public static void ANDLW(Command com)
         {
             byte k = com.GetLowByte();
@@ -303,7 +302,6 @@
             Flags.CheckZFlag(result);
             Fields.SetRegisterW(result);
         }
-
         public static void CALL(Command com)
         {
             byte k1 = com.GetLowByte();
@@ -320,8 +318,7 @@
             //ToDo: SkipCycle
 
         } // ToDo: SkipCycle
-
-        public static void CLRWDT(Command com)
+        public static void CLRWDT(Command? com)
         {
             // reset the watchdog
             Fields.ResetWatchdog();
@@ -333,7 +330,6 @@
             if (Fields.GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == true)
                 Fields.ResetPrePostScaler(); // Reset PostScaler if PSA == true (assigned to WDT)
         }
-
         public static void GOTO(Command com)
         {
             byte k1 = com.GetLowByte();
@@ -346,7 +342,6 @@
             Fields.SetPCLfromPC();
             //ToDo: Skrip Cycle
         } // ToDo: Skrip Cycle
-
         public static void IORLW(Command com)
         {
             byte k = com.GetLowByte();
@@ -357,19 +352,67 @@
             Fields.SetRegisterW(result);
         }
 
-        public static void MOVLW(Command com) { }
+        public static void MOVLW(Command com)
+        {
+            byte k = com.GetLowByte();
+            Fields.SetRegisterW(k);
+        }
+        public static void RETFIE(Command com)
+        {
+            //Load top of stack to PC
+            Fields.SetPC(Fields.PopStack());
+            Fields.SetPCLfromPC();
 
-        public static void RETFIE(Command com) { }
+            // Reenable Global Interrupt Bit
+            Fields.SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.GIE, true);
 
-        public static void RETLW(Command com) { }
+            //ToDo: SkipCycle
+        } // ToDo: SkipCycle
+        public static void RETLW(Command com)
+        {
+            byte k = com.GetLowByte();
 
-        public static void RETURN(Command com) { }
+            Fields.SetRegisterW(k);
 
-        public static void SLEEP(Command com) { }
+            //Set PC to TopOfStack
+            Fields.SetPC(Fields.PopStack());
+            Fields.SetPCLfromPC();
+            //ToDo: SkipCycle
+        } // ToDo: SkipCycle
+        public static void RETURN(Command com)
+        {
+            // Set PC to TopOfStack
+            Fields.SetPC(Fields.PopStack());
+            Fields.SetPCLfromPC();
+            // ToDo: SkipCycle
+        } // ToDo: SkipCycle
+        public static void SLEEP(Command com)
+        {
+            CLRWDT(null);
+            Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.PD, false);
+            Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.TO, true);
+            Fields.SetSleeping(true);
+            Fields.SetPC(Fields.GetPc() - 1);
+        }
+        public static void SUBLW(Command com)
+        {
+            byte k = com.GetLowByte();
 
-        public static void SUBLW(Command com) { }
+            byte result = ArithmeticLogicUnit.BitwiseSubstract(Fields.GetRegisterW(), k);
 
-        public static void XORLW(Command com) { }
+            Flags.CheckZFlag(result);
+
+            Fields.SetRegisterW(result);
+        }
+        public static void XORLW(Command com)
+        {
+            byte k = com.GetLowByte();
+
+            byte result = (byte)(Fields.GetRegisterW() ^ k);
+            Flags.CheckZFlag(result);
+
+            Fields.SetRegisterW(result);
+        }
 
         #endregion
     }

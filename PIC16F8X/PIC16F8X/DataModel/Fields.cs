@@ -200,6 +200,12 @@ namespace PIC16F8X.DataModel
             register[Registers.PCL] = pcl;
             register[Registers.PCL2] = pcl;
         }
+
+        public static void SetPC(int newValue)
+        {
+            pc = newValue;
+            SetPCLfromPC();
+        }
         #endregion
 
         #region Pre- and Postscaler
@@ -285,6 +291,16 @@ namespace PIC16F8X.DataModel
         public static void SetRegisterW(byte newValue)
         {
             w = newValue;
+        }
+
+        public static void SetSleeping(bool newStatus)
+        {
+            sleeping = newStatus;
+        }
+
+        public static bool IsSleeping()
+        {
+            return sleeping;
         }
 
         #endregion
