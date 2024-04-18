@@ -162,12 +162,63 @@
 
         public static void RLF(Command com)
         {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
 
+            // Rotate left
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) << 1);
+
+            // Add CarryFlag to result if its set
+            if (Fields.GetRegisterBit(Registers.STATUS, Flags.Status.C)) result++;
+
+            // Set CarryFlag for the current Calculation
+            // Check if 8th Bit is set 
+            if ((Fields.GetRegister(Fields.BankAddressResolution(f)) & 128) == 128)
+            {
+                Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.C, true); // 8th bit is 1 => set Carry
+            }
+            else
+            {
+                Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.C, false); // 8th bit is 0 => reset Carry
+            }
+
+            Fields.DirectionalWrite(d, f, result);
+        }
+        public static void RRF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
+
+            //rotate right
+            byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) >> 1);
+
+            // Add CarryFlag to result if its set
+            if (Fields.GetRegisterBit(Registers.STATUS, Flags.Status.C)) result+= 128; //adding carryflag to 8th bit
+
+
+            // Set CarryFlag for the current Calculation
+            // Check if 1th Bit is set 
+            if ((Fields.GetRegister(Fields.BankAddressResolution(f)) & 1) == 1)
+            {
+                Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.C, true); // 1th bit is 1 => set Carry
+            }
+            else
+            {
+                Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.C, false); // 1th bit is 0 => reset Carry
+            }
+
+            Fields.DirectionalWrite(d, f, result);
+        }
+        public static void SUBWF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
+
+            byte result = ArithmeticLogicUnit.BitwiseSubstract(Fields.GetRegister(Fields.BankAddressResolution(f)), Fields.GetRegisterW());
+
+            Fields.DirectionalWrite(d, f, result);
         }
 
-        public static void RRF(Command com) { }
-
-        public static void SUBWF(Command com) { }
 
         public static void SWAPF(Command com) { }
 
