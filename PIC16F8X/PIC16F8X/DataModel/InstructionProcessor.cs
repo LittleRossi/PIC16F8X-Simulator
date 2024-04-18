@@ -159,7 +159,6 @@
         {
             //No Operation instruction
         }
-
         public static void RLF(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -218,11 +217,26 @@
 
             Fields.DirectionalWrite(d, f, result);
         }
+        public static void SWAPF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
 
+            // logical AND with 0000 1111 to isolate lower 4 bits and shift 4 bits left, logical AND 1111 0000 to isolate high 4 bits and shift 4 bits right and logical OR both together to change positions
+            byte result = (byte)((Fields.GetRegister(Fields.BankAddressResolution(f)) & 0x0F) << 4 | (Fields.GetRegister(Fields.BankAddressResolution(f)) & 0xF0) >> 4);
 
-        public static void SWAPF(Command com) { }
+            Fields.DirectionalWrite(d, f, result);
+        }
+        public static void XORWF(Command com)
+        {
+            byte f = (byte)(com.GetLowByte() & 127);
+            byte d = (byte)(com.GetLowByte() & 128);
 
-        public static void XORWF(Command com) { }
+            byte result = (byte)(Fields.GetRegisterW() ^ Fields.GetRegister(Fields.BankAddressResolution(f)));
+            Flags.CheckZFlag(result);
+
+            Fields.DirectionalWrite(d, f, result);
+        }
 
 
         //BIT-ORIENTED FILE REGISTER OPERATIONS
