@@ -36,10 +36,6 @@ namespace PIC16F8X.DataModel
         private static bool ProgrammInitialized;
 
 
-
-
-
-
         #region Register Actions
         public static void ResetData()
         {
@@ -189,7 +185,6 @@ namespace PIC16F8X.DataModel
         }
         #endregion
 
-
         #region Programmcounter
         public static void IncreasePC()
         {
@@ -198,7 +193,7 @@ namespace PIC16F8X.DataModel
 
             SetPCLfromPC();
         }
-        private static void SetPCLfromPC()
+        public static void SetPCLfromPC()
         {
             //We need to also set the PCL Register which represents the lower 8 Bits of the PC
             byte pcl = BitConverter.GetBytes(pc)[0];
@@ -215,7 +210,24 @@ namespace PIC16F8X.DataModel
         public static void SetPrePostscalerRatio() { }
         #endregion
 
+        #region Stack
+        public static void PushOnStack()
+        {
+            //push the current PC on the Stack
+            stack[stackPointer] = pc;
 
+            if (stackPointer == 7) stackPointer = 0;
+            else stackPointer++;
+        }
+        public static int PopStack()
+        {
+            if (stackPointer == 0) stackPointer = 7;
+            else stackPointer--;
+
+            // Return PC from Stack on current Pointer index
+            return stack[stackPointer]
+        }
+        #endregion
 
         #region Getter and Setter
         public static void SetProgramm(List<string> commandList)

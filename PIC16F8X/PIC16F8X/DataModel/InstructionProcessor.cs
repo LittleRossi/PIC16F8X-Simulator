@@ -287,17 +287,75 @@
 
         //LITERAL AND CONTROL OPERATIONS
 
-        public static void ADDLW(Command com) { }
+        public static void ADDLW(Command com)
+        {
+            byte k = com.GetLowByte();
 
-        public static void ANDLW(Command com) { }
+            byte result = ArithmeticLogicUnit.BitwiseAdd(Fields.GetRegisterW(), k);
+            Fields.SetRegisterW(result);
+        }
 
-        public static void CALL(Command com) { }
+        public static void ANDLW(Command com)
+        {
+            byte k = com.GetLowByte();
 
-        public static void CLRWDT(Command com) { }
+            byte result = (byte)(Fields.GetRegisterW() & k);
+            Flags.CheckZFlag(result);
+            Fields.SetRegisterW(result);
+        }
 
-        public static void GOTO(Command com) { }
+        public static void CALL(Command com)
+        {
+            byte k1 = com.GetLowByte();
+            byte k2 = (byte)(com.GetHighByte() & 7);
 
-        public static void IORLW(Command com) { }
+            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2);
+
+            // push current PC on Stack
+            Fields.PushOnStack();
+            // set PC with PCLATH
+            Fields.SetPCFromBytes(all, k1);
+            Fields.SetPCLfromPC();
+
+            //ToDo: SkipCycle
+
+        } // ToDo: SkipCycle
+
+        public static void CLRWDT(Command com)
+        {
+            // reset the watchdog
+            Fields.ResetWatchdog();
+
+            //set the STATUS Register Flags
+            Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.PD, false);
+            Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.TO, false);
+
+            if (Fields.GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == true)
+                Fields.ResetPrePostScaler(); // Reset PostScaler if PSA == true (assigned to WDT)
+        }
+
+        public static void GOTO(Command com)
+        {
+            byte k1 = com.GetLowByte();
+            byte k2 = (byte)(com.GetHighByte() & 7);
+
+            // Get upper 5 bits of PCL
+            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2);
+
+            Fields.SetPCFromBytes(all, k1);
+            Fields.SetPCLfromPC();
+            //ToDo: Skrip Cycle
+        } // ToDo: Skrip Cycle
+
+        public static void IORLW(Command com)
+        {
+            byte k = com.GetLowByte();
+
+            byte result = (byte)(Fields.GetRegisterW() | k);
+            Flags.CheckZFlag(result);
+
+            Fields.SetRegisterW(result);
+        }
 
         public static void MOVLW(Command com) { }
 
