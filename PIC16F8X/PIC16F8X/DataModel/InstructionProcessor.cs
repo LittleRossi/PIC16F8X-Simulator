@@ -241,13 +241,48 @@
 
         //BIT-ORIENTED FILE REGISTER OPERATIONS
 
-        public static void BCF(Command com) { }
+        public static void BCF(Command com)
+        {
+            int b1 = (com.GetHighByte() & 3) << 1; //Get the 2 last bits of HighByte and shift them to the left to get correct position
+            int b = b1 + (((com.GetLowByte() & 128) == 128) ? 1 : 0); // get 8th bit of HighByte and check if its 128 if yes add 1 to b
+            byte f = (byte)(com.GetLowByte() & 127);
 
-        public static void BSF(Command com) { }
+            Fields.SetSingleRegisterBit(Fields.BankAddressResolution(f), b, false);
+        }
+        public static void BSF(Command com)
+        {
+            int b1 = (com.GetHighByte() & 3) << 1; //Get the 2 last bits of HighByte and shift them to the left to get correct position
+            int b = b1 + (((com.GetLowByte() & 128) == 128) ? 1 : 0); // get 8th bit of HighByte and check if its 128 if yes add 1 to b
+            byte f = (byte)(com.GetLowByte() & 127);
 
-        public static void BTFSC(Command com) { }
+            Fields.SetSingleRegisterBit(Fields.BankAddressResolution(f), b, true);
+        }
+        public static void BTFSC(Command com)
+        {
+            int b1 = (com.GetHighByte() & 3) << 1; //Get the 2 last bits of HighByte and shift them to the left to get correct position
+            int b = b1 + (((com.GetLowByte() & 128) == 128) ? 1 : 0); // get 8th bit of HighByte and check if its 128 if yes add 1 to b
+            byte f = (byte)(com.GetLowByte() & 127);
 
-        public static void BTFSS(Command com) { }
+            // check if bit b in register f != 1
+            if (Fields.GetRegisterBit(Fields.BankAddressResolution(f), b) == false)
+            {
+                Fields.IncreasePC();
+                // Skip Cycle
+            }
+        } //ToDo: Skip Cycle
+        public static void BTFSS(Command com)
+        {
+            int b1 = (com.GetHighByte() & 3) << 1; //Get the 2 last bits of HighByte and shift them to the left to get correct position
+            int b = b1 + (((com.GetLowByte() & 128) == 128) ? 1 : 0); // get 8th bit of HighByte and check if its 128 if yes add 1 to b
+            byte f = (byte)(com.GetLowByte() & 127);
+
+            // check if bit b in register f == 1
+            if (Fields.GetRegisterBit(Fields.BankAddressResolution(f), b) == true)
+            {
+                Fields.IncreasePC();
+                // Skip Cycle
+            }
+        } //ToDo: Skip Cycle
 
 
         //LITERAL AND CONTROL OPERATIONS
