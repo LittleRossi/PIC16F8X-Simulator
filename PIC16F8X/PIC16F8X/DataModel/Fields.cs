@@ -263,6 +263,22 @@ namespace PIC16F8X.DataModel
         }
         #endregion
 
+        #region Runtime
+        public static void IncreaseRuntime()
+        {
+            // Increase the Runtime of the amount of one Execution
+            runtime += GetSingleExecutionTime();
+        }
+
+        private static long GetSingleExecutionTime()
+        {
+            // calculate the ExecutionTime for the current clockspeed
+            // quarzfrequenzy of 4MHz => results in 1μs ExecutionTime
+            return (4000000 / clockspeed); //4000000 / 4000000 => 1, if clockspeed is changed the ExecutionTime is different
+        }
+
+        #endregion
+
         #region Stack
         public static void PushOnStack()
         {
