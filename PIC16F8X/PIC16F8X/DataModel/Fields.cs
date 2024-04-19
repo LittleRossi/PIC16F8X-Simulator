@@ -183,6 +183,12 @@ namespace PIC16F8X.DataModel
                 SetRegister(BankAddressResolution(f), res); // DestinationBit = 1 => result in f register
             }
         }
+        public static void ToggleSingleRegisterBit(byte address, int bit)
+        {
+            if (GetRegisterBit(address, bit))
+                SetSingleRegisterBit(address, bit, false); // if bit is set => reset it
+            else SetSingleRegisterBit(address, bit, true); // if bit is not set => set it
+        }
         #endregion
 
         #region Programmcounter
