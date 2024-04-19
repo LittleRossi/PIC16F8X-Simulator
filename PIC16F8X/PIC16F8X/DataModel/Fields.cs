@@ -347,6 +347,25 @@ namespace PIC16F8X.DataModel
             // Return false, if GIE is false => Interrupts are not enabled
             return false;
         }
+        public static void CallInterrupt()
+        {
+            // Push the current PC on Stack
+            PushOnStack();
+
+            // Set PC on interrupt routine address
+            SetPC(0x04);
+
+            // disable Interrupts
+            SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.GIE, false);
+
+            if (IsSleeping())
+            {
+                SetSingleRegisterBit(Registers.STATUS, Flags.Status.PD, false);
+                SetSingleRegisterBit(Registers.STATUS, Flags.Status.TO, true);
+                IncreasePC();
+                SetSleeping(false);
+            }
+        }
         #endregion
 
         #region Stack
