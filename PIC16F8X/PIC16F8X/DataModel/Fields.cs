@@ -25,7 +25,8 @@ namespace PIC16F8X.DataModel
         private static bool watchDogEnabled;
 
         // Watchdog postscaler and Timer prescaler
-        private static int prePostscalerRatio, prePostscaler;
+        private static int prePostscalerRatio; // multiplier for timer
+        private static int prePostscaler;
 
         //Interrupts
         private static byte RBIntLastState;
@@ -219,7 +220,29 @@ namespace PIC16F8X.DataModel
         {
             prePostscaler = 0;
         }
-        public static void SetPrePostscalerRatio() { }
+        public static void SetPrePostscalerRatio()
+        {
+            // Get the PSA0, PS1, PS2 Bits (PS2-0)
+            byte PS = (byte)(GetRegister(Registers.OPTION) & 7);
+
+            // Check if PrePostScaler is assigned to TMR0 or WatchDogTimer
+            if(GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == false)
+            {
+                // Prescaler assigned to TMR0
+                prePostscalerRatio = (int)Math.Pow(2, PS + 1); //set muliplier for timer
+            }
+            else
+            {
+                // Prescaler assigned to WatchDogTimer
+                prePostscalerRatio = (int)Math.Pow(2, PS); //set muliplier for timer
+            }
+
+            // Calculation WatchDogTimer:
+            // PS2:0    multiplier
+            // 000      1 : 1
+            // 001      1 : 2
+            // 010      1 : 4
+        }
         #endregion
 
         #region Watchdog
