@@ -1,4 +1,6 @@
-﻿namespace PIC16F8X.DataModel
+﻿using System.Reflection;
+
+namespace PIC16F8X.DataModel
 {
     public static class InstructionProcessor
     {
@@ -413,6 +415,17 @@
             Fields.SetRegisterW(result);
         }
 
+        #endregion
+
+        #region Execute
+        public static void ExecuteInstruction(Instructions.Instruction instruction, Command com)
+        {
+            // Get the matching instruction method by the name of the instruction by using reflection
+            MethodInfo instructionMethod = typeof(InstructionProcessor).GetMethod(instruction.ToString());
+
+            // call the instruction method with the command data
+            instructionMethod.Invoke(null, new object[] { com });
+        }
         #endregion
     }
 }
