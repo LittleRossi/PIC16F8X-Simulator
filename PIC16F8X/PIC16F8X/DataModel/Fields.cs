@@ -290,6 +290,26 @@ namespace PIC16F8X.DataModel
 
 
         }
+        public static void ProcessWatchDogTimer()
+        {
+            if (watchDogEnabled)
+            {
+                // add Executiontime to watchdog
+                watchdog += GetSingleExecutionTime();
+                int limit = watchdogLimit;
+
+                if (GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == true) // Assigned to WatchDogTimer
+                {
+                    // calculate Limit with current PreScaler limit
+                    limit *= GetPrePostScalerRatio();
+                }
+                if (watchdog >= limit)
+                {
+                    // execute a RESET caused by the WatchDog
+                    WatchDogTimerReset();
+                }
+            }
+        }
         #endregion
 
         #region Runtime
@@ -414,6 +434,11 @@ namespace PIC16F8X.DataModel
         public static bool IsSleeping()
         {
             return sleeping;
+        }
+
+        public static int GetPrePostScalerRatio()
+        {
+            return prePostscalerRatio;
         }
 
         #endregion
