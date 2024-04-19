@@ -279,6 +279,27 @@ namespace PIC16F8X.DataModel
 
         #endregion
 
+        #region Interrupts
+        public static bool CheckForInterrupts()
+        {
+            // Check Global Interrups Enabled (GIE) is true
+            if (GetRegisterBit(Registers.INTCON, Flags.Intcon.GIE))
+            {
+                // Check the INTERRUPT LOGIC
+                if (
+                GetRegisterBit(Registers.INTCON, Flags.Intcon.T0IF) && GetRegisterBit(Registers.INTCON, Flags.Intcon.T0IE) ||
+                GetRegisterBit(Registers.INTCON, Flags.Intcon.INTF) && GetRegisterBit(Registers.INTCON, Flags.Intcon.INTE) ||
+                GetRegisterBit(Registers.INTCON, Flags.Intcon.RBIF) && GetRegisterBit(Registers.INTCON, Flags.Intcon.RBIE)
+                )
+                {
+                    return true;
+                }
+            }
+            // Return false, if GIE is false => Interrupts are not enabled
+            return false;
+        }
+        #endregion
+
         #region Stack
         public static void PushOnStack()
         {
