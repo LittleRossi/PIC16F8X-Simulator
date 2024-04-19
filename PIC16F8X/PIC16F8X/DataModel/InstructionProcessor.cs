@@ -351,7 +351,6 @@
 
             Fields.SetRegisterW(result);
         }
-
         public static void MOVLW(Command com)
         {
             byte k = com.GetLowByte();

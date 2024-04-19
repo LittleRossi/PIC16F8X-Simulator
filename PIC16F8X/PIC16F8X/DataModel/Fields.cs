@@ -18,7 +18,7 @@ namespace PIC16F8X.DataModel
         // Status Variables
         private static decimal runtime, watchdog; //in ms
         private static int clockspeed = 4000000;  //in Hz
-        private static bool sleeping;
+        private static bool sleeping; // bool if PIC is SLEEPING
 
         //Watchdog
         private static readonly int watchdogLimit = 18000; //18ms watchdog time
@@ -214,6 +214,53 @@ namespace PIC16F8X.DataModel
             prePostscaler = 0;
         }
         public static void SetPrePostscalerRatio() { }
+        #endregion
+
+        #region Watchdog
+        public static void WatchDogTimerReset()
+        {
+            // Set Watchdog to 0
+            ResetWatchdog();
+
+            // RESET CONDITION FOR PROGRAM COUNTER AND THE STATUS REGISTER
+
+            if (IsSleeping())
+            {
+                // WDT Reset Wake-up (during SLEEP)
+               
+                //STATUS Register (uuu0 0uuu)
+                SetSingleRegisterBit(Registers.STATUS, Flags.Status.PD, false);
+                SetSingleRegisterBit(Registers.STATUS, Flags.Status.TO, false);
+
+                // Increase Programmcounter
+                IncreasePC(); 
+
+                // Wake-up PIC
+                SetSleeping(false);
+            }
+            else
+            {
+                // WDT Reset during normal operation
+
+                //Reset Programmcounter
+                SetPC(0);
+
+                // Reset W-Register
+                SetRegisterW(0);
+
+                //STATUS Register (0000 1uuu)
+                SetRegister(Registers.STATUS, (byte)((GetRegister(Registers.STATUS) & 7) + 0x08));
+
+                //OPTION Register (1111 1111)
+                SetRegister(Registers.OPTION, 0xFF);
+
+                //PCLATH Register (0000 0000)
+                SetRegister(Registers.PCLATH, 0x00);
+            }
+
+
+
+        }
         #endregion
 
         #region Stack
