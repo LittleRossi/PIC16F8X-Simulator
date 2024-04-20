@@ -366,6 +366,39 @@ namespace PIC16F8X.DataModel
                 SetSleeping(false);
             }
         }
+        public static void ProcessRBInterrupts()
+        {
+            // Get Register PORTB<7:4>, to check for input change
+            byte RB = (byte)(GetRegister(Registers.PORTB) & 0xF0);
+
+            // exclusive OR last RB state with current TRISB => check for an input change
+            if (((RBIntLastState ^ RB) & GetRegister(Registers.TRISB)) != 0)
+            {
+                // if RB has change => set RBIF flag
+                SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.RBIF, true);
+            }
+            // Set Last RB state to current state
+            RBIntLastState = RB;
+
+
+            //RB0 Interrupts depending of Flankchange
+
+            // Get the RB0 Bit
+            byte RB0 = (byte)(GetRegister(Registers.PORTB) & 0x01);
+
+            // INTEDG indicates if a rising or falling flank is active
+            // INTEDG = 1 => rising flank: check if RBO is bigger than RB0IntLastState
+            // OR
+            // INTEDG = 0 => falling flank: check if RBO is lower than RB0IntLastState
+            if (GetRegisterBit(Registers.OPTION, Flags.Option.INTEDG) && RB0 > RB0IntLastState || !GetRegisterBit(Registers.OPTION, Flags.Option.INTEDG) && RB0 < RB0IntLastState)
+            {
+                SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.INTF, true);
+            }
+
+            // Set Last RB0 state to current state
+            RB0IntLastState = RB0;
+        }
+
         #endregion
 
         #region Stack

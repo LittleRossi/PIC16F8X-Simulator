@@ -426,6 +426,7 @@ namespace PIC16F8X.DataModel
             // call the instruction method with the command data
             instructionMethod.Invoke(null, new object[] { com });
         }
+
         #endregion
     }
 }
