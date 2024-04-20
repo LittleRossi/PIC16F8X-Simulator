@@ -480,6 +480,10 @@ namespace PIC16F8X.DataModel
 
             ProgrammInitialized = true;
         }
+        public static List<Command> GetProgramm()
+        {
+            return program;
+        }
 
         public static int[] GetStack()
         {
@@ -534,6 +538,11 @@ namespace PIC16F8X.DataModel
         public static int GetPrePostScalerRatio()
         {
             return prePostscalerRatio;
+        }
+
+        public static bool IsProgrammInitialized()
+        {
+            return ProgrammInitialized;
         }
 
         #endregion

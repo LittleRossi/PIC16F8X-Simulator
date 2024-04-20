@@ -437,6 +437,30 @@ namespace PIC16F8X.DataModel
                 Fields.CallInterrupt();
             }
         }
+        public static void ProcessOnePCStep()
+        {
+            // Processes one ProgrammCounter step by execution current command and incrementing ProgrammCounter after
+            
+            // check if programm is initialized
+            if (Fields.IsProgrammInitialized())
+            {
+                // check if PIC is sleeping
+                if (!Fields.IsSleeping())
+                {
+                    if (Fields.GetPc() < Fields.GetProgramm().Count)
+                    {
+                        Command com = Fields.GetProgramm()[Fields.GetPc()]; // get the current hex instruction
+                        Fields.IncreasePC();
+                        InstructionProcessor.ExecuteInstruction(Instructions.InstructionDecoder(com), com); // execute the current instruction
+                    }
+                    else // PC is out of programm area
+                    {
+                        Fields.IncreasePC();
+                    }
+                }
+                SkipOneCycle();
+            }
+        }
         #endregion
     }
 }
