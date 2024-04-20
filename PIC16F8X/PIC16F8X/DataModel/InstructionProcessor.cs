@@ -88,11 +88,9 @@ namespace PIC16F8X.DataModel
             {
                 // if Result = 0 we skip the next instruction
                 Fields.IncreasePC();
-
-                //ToDo:
-                // CycleSkip!!!
+                SkipOneCycle();
             }
-        } //ToDo: SkipCycle
+        }
         public static void INCF(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -117,14 +115,11 @@ namespace PIC16F8X.DataModel
             {
                 // if Result = 0 we skip the next instruction
                 Fields.IncreasePC();
-
-                //ToDo:
-                // CycleSkip!!!
+                SkipOneCycle();
             }
 
-
             Fields.DirectionalWrite(d, f, result);
-        } //ToDo: SkipCycle
+        }
         public static void IORWF(Command com)
         {
             byte f = (byte)(com.GetLowByte() & 127);
@@ -269,9 +264,9 @@ namespace PIC16F8X.DataModel
             if (Fields.GetRegisterBit(Fields.BankAddressResolution(f), b) == false)
             {
                 Fields.IncreasePC();
-                // Skip Cycle
+                SkipOneCycle();
             }
-        } //ToDo: Skip Cycle
+        }
         public static void BTFSS(Command com)
         {
             int b1 = (com.GetHighByte() & 3) << 1; //Get the 2 last bits of HighByte and shift them to the left to get correct position
@@ -282,9 +277,9 @@ namespace PIC16F8X.DataModel
             if (Fields.GetRegisterBit(Fields.BankAddressResolution(f), b) == true)
             {
                 Fields.IncreasePC();
-                // Skip Cycle
+                SkipOneCycle();
             }
-        } //ToDo: Skip Cycle
+        }
 
 
         //LITERAL AND CONTROL OPERATIONS
@@ -317,9 +312,8 @@ namespace PIC16F8X.DataModel
             Fields.SetPCFromBytes(all, k1);
             Fields.SetPCLfromPC();
 
-            //ToDo: SkipCycle
-
-        } // ToDo: SkipCycle
+            SkipOneCycle();
+        }
         public static void CLRWDT(Command? com)
         {
             // reset the watchdog
@@ -342,8 +336,8 @@ namespace PIC16F8X.DataModel
 
             Fields.SetPCFromBytes(all, k1);
             Fields.SetPCLfromPC();
-            //ToDo: Skrip Cycle
-        } // ToDo: Skrip Cycle
+            SkipOneCycle();
+        }
         public static void IORLW(Command com)
         {
             byte k = com.GetLowByte();
@@ -367,8 +361,8 @@ namespace PIC16F8X.DataModel
             // Reenable Global Interrupt Bit
             Fields.SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.GIE, true);
 
-            //ToDo: SkipCycle
-        } // ToDo: SkipCycle
+            SkipOneCycle();
+        }
         public static void RETLW(Command com)
         {
             byte k = com.GetLowByte();
@@ -378,15 +372,15 @@ namespace PIC16F8X.DataModel
             //Set PC to TopOfStack
             Fields.SetPC(Fields.PopStack());
             Fields.SetPCLfromPC();
-            //ToDo: SkipCycle
-        } // ToDo: SkipCycle
+            SkipOneCycle();
+        }
         public static void RETURN(Command com)
         {
             // Set PC to TopOfStack
             Fields.SetPC(Fields.PopStack());
             Fields.SetPCLfromPC();
-            // ToDo: SkipCycle
-        } // ToDo: SkipCycle
+            SkipOneCycle();
+        }
         public static void SLEEP(Command com)
         {
             CLRWDT(null);
@@ -426,7 +420,23 @@ namespace PIC16F8X.DataModel
             // call the instruction method with the command data
             instructionMethod.Invoke(null, new object[] { com });
         }
+        public static void SkipOneCycle()
+        {
+            if (!Fields.IsSleeping()) // Check if PIC is sleeping
+            {
+                // Process the Timer0 interrupt
+                Fields.ProcessTMR0();
+            }
 
+            Fields.ProcessWatchDogTimer();
+            Fields.ProcessRBInterrupts();
+            Fields.IncreaseRuntime();
+
+            if (Fields.CheckForInterrupts())
+            {
+                Fields.CallInterrupt();
+            }
+        }
         #endregion
     }
 }

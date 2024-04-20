@@ -1,6 +1,3 @@
 ﻿ToDo:
 - UI
-
-- SkipCycle
 - ProgrammCounterStep()
-- SkipCycle in Instuctions
