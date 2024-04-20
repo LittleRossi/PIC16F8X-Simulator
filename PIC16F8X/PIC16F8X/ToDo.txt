@@ -1,11 +1,6 @@
 ﻿ToDo:
 - UI
-- SkipCycle in InstructionProcessor
-- Interrupts
 
-
-- ProcessRBInterrupt()
-- ProcessTMR0()
 - SkipCycle
 - ProgrammCounterStep()
 - SkipCycle in Instuctions

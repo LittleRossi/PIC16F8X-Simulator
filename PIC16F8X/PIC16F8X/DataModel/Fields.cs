@@ -398,7 +398,50 @@ namespace PIC16F8X.DataModel
             // Set Last RB0 state to current state
             RB0IntLastState = RB0;
         }
+        public static void ProcessTMR0()
+        {
+            //Timer0 Overflow interrupt
 
+            // Get the TMR0 input: RA4 bit
+            byte RA4 = (byte)(GetRegister(Registers.PORTA) >> 4 & 0x01);
+
+            // the condition for an TMR0 Interrupt are out of the datasheet
+            if
+            (
+                GetRegisterBit(Registers.OPTION, Flags.Option.T0CS) == false || // internal clock source
+                GetRegisterBit(Registers.OPTION, Flags.Option.T0SE) && RA4 < RA4TimerLastState || // external Clock source RA4 and falling flank 
+                !GetRegisterBit(Registers.OPTION, Flags.Option.T0SE) && RA4 > RA4TimerLastState   // external Clock source RA4 and rising flank
+            )
+            {
+                bool increment = true;
+
+                if (GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == false) // the prescaler is assigned to to TMR0
+                {
+                    prePostscaler++;
+                    if (prePostscaler >= GetPrePostScalerRatio())
+                    {
+                        ResetPrePostScaler();
+                        increment = true;
+                    }
+                    else
+                    {
+                        increment = false;
+                    }
+                }
+
+                if (increment)
+                {
+                    byte tmr0 = (byte)(GetRegister(Registers.TRM0) + 1); // Increment the TMR0 Register
+                    register[Registers.TRM0] = tmr0; // direct access to register to avoid a prescaler reset
+
+                    if (tmr0 == 0)
+                    {
+                        SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.T0IF, true);
+                    }
+                }
+            }
+            RA4TimerLastState = RA4;
+        }
         #endregion
 
         #region Stack
