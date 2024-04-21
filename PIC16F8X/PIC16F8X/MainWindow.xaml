@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PIC16F8X"
+        xmlns:local="clr-namespace:PIC16F8X" xmlns:viewmodel="clr-namespace:PIC16F8X.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="PIC16F8X Simulator" SizeToContent="WidthAndHeight" Margin="-2,0,0,0" ResizeMode="CanMinimize">
         <DockPanel>
@@ -66,6 +66,16 @@
                             <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SFRValues[3]}" Style="{StaticResource SFRValues}"/>
                             <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SFRValues[4]}" Style="{StaticResource SFRValues}"/>
                             <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SFRValues[5]}" Style="{StaticResource SFRValues}"/>
+
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="Option"/>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Timer0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding PrePostScalerText}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="3" Text="Command"/>
+
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding SFRValues[6]}" Style="{StaticResource SFRValues}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding SFRValues[7]}" Style="{StaticResource SFRValues}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding SFRValues[8]}" Style="{StaticResource SFRValues}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding SFRValues[9]}" Style="{StaticResource SFRValues}"/>
                         </Grid>
                     </GroupBox>
                     

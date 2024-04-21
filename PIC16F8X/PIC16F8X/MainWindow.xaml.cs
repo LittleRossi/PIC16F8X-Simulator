@@ -2,6 +2,8 @@
 using PIC16F8X.DataModel;
 using PIC16F8X.ViewModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace PIC16F8X
 {
@@ -60,6 +62,21 @@ namespace PIC16F8X
         }
         #endregion
 
+
+        #region Textbox functions
+        private void TextBlock_StatusBitChange(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock tBlock = (TextBlock)sender;
+            int bit = (int)typeof(Flags.Status).GetField(tBlock.Name).GetValue(this); // gets the bit-number of the matching Status register
+            Fields.ToggleRegisterBit(Registers.STATUS, bit); // toggle the bit value
+            
+            //ToDo: Update UI
+        }
+        #endregion
+
+        #region UI-Actions
+
+        #endregion
 
     }
 }
