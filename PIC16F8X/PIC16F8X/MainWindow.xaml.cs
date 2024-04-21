@@ -1,28 +1,32 @@
 ﻿using Microsoft.Win32;
 using PIC16F8X.DataModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PIC16F8X.ViewModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PIC16F8X
 {
     public partial class MainWindow : Window
     {
+        private readonly MainWindowViewModel View;
+
         public MainWindow()
         {
+
+            // DataContext for UI
+            View = new MainWindowViewModel();
+            DataContext = View;
+
+            //TODO
+
+
+            // END TODO
+
+
+            // initialize UI
             InitializeComponent();
 
+            // Set initial Data
+            Reset();
         }
 
 
@@ -51,7 +55,7 @@ namespace PIC16F8X
             Fields.ResetData();
             // ToDo:
             //  - stop
-            //  - UI update after resetting the data
+            //  - UI Update
 
         }
         #endregion

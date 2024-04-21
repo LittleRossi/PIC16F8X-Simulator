@@ -5,7 +5,7 @@ namespace PIC16F8X.DataModel
 {
     public static class Fields
     {
-        //ToDo: ProgrammCode with List of Class Command
+        //ProgrammCode with List of Class Command
         private static List<Command> program = new List<Command>();
 
         //Data Register
@@ -70,7 +70,7 @@ namespace PIC16F8X.DataModel
                     break;
                 case 0x01:
                     ResetPrePostScaler();
-                    //ToDo: handle TMR0
+                    InstructionProcessor.SkipOneCycle();
                     break;
                 case 0x02: // PCL on Bank0 and Bank1
                     register[Convert.ToInt16(0x82)] = data;
@@ -459,7 +459,7 @@ namespace PIC16F8X.DataModel
             else stackPointer--;
 
             // Return PC from Stack on current Pointer index
-            return stack[stackPointer]
+            return stack[stackPointer];
         }
         #endregion
 

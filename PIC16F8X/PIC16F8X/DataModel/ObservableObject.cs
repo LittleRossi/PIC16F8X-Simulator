@@ -6,9 +6,9 @@ namespace PIC16F8X.DataModel
 {
 
     // ##########################################################################################
-    // # We need an Observable object type as SourceLine, because we need to throw an event,    #
-    // # when a new breakoint is set in the UI. Otherwise we can´t recognize a change in the    #
-    // # programm while running.                                                                #
+    // # We need an Observable object because we need to throw an event, when something in the  #
+    // # UI has changed. Otherwise we can´t recognize a change in the                           #
+    // # programm while running. if we thow an event, the UI grabs the data and Update the UI.  #
     // ##########################################################################################
 
     public class ObservableObject : INotifyPropertyChanged
