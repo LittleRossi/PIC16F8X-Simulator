@@ -495,6 +495,16 @@ namespace PIC16F8X.DataModel
             return pc;
         }
 
+        public static void SetClockSpeed(int speed)
+        {
+            clockspeed = speed;
+        }
+
+        public static void SetWatchdogEnabled(bool wd)
+        {
+            watchDogEnabled = wd;
+        }
+
         public static decimal GetRuntime()
         {
             return runtime;
