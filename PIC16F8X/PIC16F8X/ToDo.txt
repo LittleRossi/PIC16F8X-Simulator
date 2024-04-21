@@ -1,3 +1,6 @@
 ﻿ToDo:
 - Window (UI)
-- ViewModel
+- Funktionen für Buttons in UI
+- Funktionen zum updaten der UI
+- Programmstep
+- StepTimer
