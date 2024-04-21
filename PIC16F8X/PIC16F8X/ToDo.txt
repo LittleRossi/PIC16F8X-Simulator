@@ -4,3 +4,7 @@
 - Funktionen zum updaten der UI
 - Programmstep
 - StepTimer
+
+Tests:
+- test files durchführen
+- Bewertung kontrollieren umsetzung
