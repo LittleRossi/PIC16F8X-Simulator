@@ -58,11 +58,6 @@ namespace PIC16F8X.DataModel
             SetPrePostscalerRatio();
         }
 
-        internal static void ToggleRegisterBit(object sTATUS, int bit)
-        {
-            throw new NotImplementedException();
-        }
-
         public static void SetRegister(byte address, byte data)
         {
             // Set the data in the correct Register

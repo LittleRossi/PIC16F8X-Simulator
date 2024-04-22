@@ -67,9 +67,27 @@ namespace PIC16F8X
         private void TextBlock_StatusBitChange(object sender, MouseButtonEventArgs e)
         {
             TextBlock tBlock = (TextBlock)sender;
-            int bit = (int)typeof(Flags.Status).GetField(tBlock.Name).GetValue(this); // gets the bit-number of the matching Status register
-            Fields.ToggleRegisterBit(Registers.STATUS, bit); // toggle the bit value
+            int bit = (int)typeof(Flags.Status).GetField(tBlock.Name).GetValue(this); // gets the bit-index of the matching Status register
+            Fields.ToggleSingleRegisterBit(Registers.STATUS, bit); // toggle the bit value
             
+            //ToDo: Update UI
+        }
+
+        private void TextBlock_OptionBitChange(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock tBlock = (TextBlock)sender;
+            int bit = (int)typeof(Flags.Option).GetField(tBlock.Name).GetValue(this); // gets the bit-index of the matching Option register
+            Fields.ToggleSingleRegisterBit(Registers.OPTION, bit); // toggle the bit value
+
+            //ToDo: Update UI
+        }
+
+        private void TextBlock_IntconBitChange(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock tBlock = (TextBlock)sender;
+            int bit = (int)typeof(Flags.Intcon).GetField(tBlock.Name).GetValue(this); // gets the bit-index of the matching Option register
+            Fields.ToggleSingleRegisterBit(Registers.INTCON, bit); // toggle the bit value
+
             //ToDo: Update UI
         }
         #endregion
