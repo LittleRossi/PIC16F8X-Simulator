@@ -6,13 +6,23 @@
         xmlns:viewmodel="clr-namespace:PIC16F8X.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="PIC16F8X Simulator" SizeToContent="WidthAndHeight" Margin="-2,0,0,0" ResizeMode="CanMinimize">
+
+    <Window.Resources>
+        <Style x:Key="StackTextBlock" TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10,2,10,2"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+    </Window.Resources>
+    
+    
         <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Datei">
                 <MenuItem x:Name="MenuOpen" Header="_Open" Click="MenuOpen_Click"/>
             </MenuItem>
         </Menu>
-            
+
         <StackPanel Margin="5,0,5,5">
             <Grid>
                 <Grid.RowDefinitions>
@@ -59,7 +69,7 @@
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="PC"/>
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="Status"/>
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="FSR"/>
-                            
+
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SFRValues[0]}" Style="{StaticResource SFRValues}"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SFRValues[1]}" Style="{StaticResource SFRValues}"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SFRValues[2]}" Style="{StaticResource SFRValues}"/>
@@ -127,7 +137,7 @@
                             <TextBlock Grid.Row="1" Grid.Column="7" Text="{Binding Status[1]}" Padding="10,0,10,10" MouseLeftButtonDown="TextBlock_StatusBitChange" Name="DC"/>
                             <TextBlock Grid.Row="1" Grid.Column="8" Text="{Binding Status[0]}" Padding="10,0,10,10" MouseLeftButtonDown="TextBlock_StatusBitChange" Name="C"/>
 
-                            
+
                             <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" FontWeight="Medium">Option</TextBlock>
                             <TextBlock Grid.Row="2" Grid.Column="1">RPu</TextBlock>
                             <TextBlock Grid.Row="2" Grid.Column="2">IEg</TextBlock>
@@ -171,16 +181,90 @@
 
                         </Grid>
                     </GroupBox>
-                    
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <GroupBox Grid.Row="0" Header="Port A">
+                            <StackPanel Orientation="Vertical">
+                                <DockPanel>
+                                    <TextBlock VerticalAlignment="Center" Margin="10">Tris</TextBlock>
+                                    <StackPanel  Name="TrisA" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <CheckBox x:Name="TrisA4" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisA[4]}">4</CheckBox>
+                                        <CheckBox x:Name="TrisA3" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisA[3]}">3</CheckBox>
+                                        <CheckBox x:Name="TrisA2" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisA[2]}">2</CheckBox>
+                                        <CheckBox x:Name="TrisA1" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisA[1]}">1</CheckBox>
+                                        <CheckBox x:Name="TrisA0" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisA[0]}">0</CheckBox>
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock VerticalAlignment="Center" Margin="10" HorizontalAlignment="Left"> Port</TextBlock>
+                                    <StackPanel Name="PinA" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <CheckBox x:Name="PinA4" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortA[4]}">4</CheckBox>
+                                        <CheckBox x:Name="PinA3" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortA[3]}">3</CheckBox>
+                                        <CheckBox x:Name="PinA2" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortA[2]}">2</CheckBox>
+                                        <CheckBox x:Name="PinA1" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortA[1]}">1</CheckBox>
+                                        <CheckBox x:Name="PinA0" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortA[0]}">0</CheckBox>
+                                    </StackPanel>
+                                </DockPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Header="Port B">
+                            <StackPanel Orientation="Vertical">
+                                <DockPanel>
+                                    <TextBlock VerticalAlignment="Center" Margin="10">Tris</TextBlock>
+                                    <StackPanel  Name="TrisB" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <CheckBox x:Name="TrisB7" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[7]}">7</CheckBox>
+                                        <CheckBox x:Name="TrisB6" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[6]}">6</CheckBox>
+                                        <CheckBox x:Name="TrisB5" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[5]}">5</CheckBox>
+                                        <CheckBox x:Name="TrisB4" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[4]}">4</CheckBox>
+                                        <CheckBox x:Name="TrisB3" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[3]}">3</CheckBox>
+                                        <CheckBox x:Name="TrisB2" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[2]}">2</CheckBox>
+                                        <CheckBox x:Name="TrisB1" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[1]}">1</CheckBox>
+                                        <CheckBox x:Name="TrisB0" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisB[0]}">0</CheckBox>
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock VerticalAlignment="Center" Margin="10" HorizontalAlignment="Left"> Port</TextBlock>
+                                    <StackPanel Name="PinB" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <CheckBox x:Name="PinB7" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[7]}">7</CheckBox>
+                                        <CheckBox x:Name="PinB6" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[6]}">6</CheckBox>
+                                        <CheckBox x:Name="PinB5" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[5]}">5</CheckBox>
+                                        <CheckBox x:Name="PinB4" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[4]}">4</CheckBox>
+                                        <CheckBox x:Name="PinB3" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[3]}">3</CheckBox>
+                                        <CheckBox x:Name="PinB2" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[2]}">2</CheckBox>
+                                        <CheckBox x:Name="PinB1" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[1]}">1</CheckBox>
+                                        <CheckBox x:Name="PinB0" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding PortB[0]}">0</CheckBox>
+                                    </StackPanel>
+                                </DockPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </Grid>
+
+
+
+
+                    <GroupBox  Grid.Column="3" Header="Stack" MinWidth="100" MinHeight="100px">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" UseLayoutRounding="True">
+                            <TextBlock Text="{Binding StackDisplay[0]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[1]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[2]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[3]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[4]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[5]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[6]}" Style="{StaticResource StackTextBlock}"/>
+                            <TextBlock Text="{Binding StackDisplay[7]}" Style="{StaticResource StackTextBlock}"/>
+                        </StackPanel>
+                    </GroupBox>
+
+
+
+
+
                 </Grid>
-                
-                
-                
-                
             </Grid>
-                
-                
         </StackPanel>
-        
     </DockPanel>
 </Window>
