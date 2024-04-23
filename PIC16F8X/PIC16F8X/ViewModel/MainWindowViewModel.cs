@@ -9,8 +9,6 @@ namespace PIC16F8X.ViewModel
     {
 
         #region non-changing fields
-        public string[] FileRegisterColumns { get; }
-        public string[] FileRegisterRows { get; }
         public KeyValuePair<int, string>[] ClockSpeedPairs { get; }
         #endregion
 
@@ -132,8 +130,6 @@ namespace PIC16F8X.ViewModel
 
         public MainWindowViewModel()
         {
-            FileRegisterColumns = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" };
-            FileRegisterRows = new string[] { "B0: 0", "B0: 10", "B0: 20", "B0: 30", "B0: 40", "B0: 50", "B0: 60", "B0: 70", "B1: 0", "B1: 10", "B1: 20", "B1: 30", "B1: 40", "B1: 50", "B1: 60", "B1: 70" };
             FileRegisterData = new string[16, 16];
             ClockSpeedPairs = new KeyValuePair<int, string>[]{
                 new KeyValuePair<int, string>(4000000, "4 MHz"),

@@ -304,7 +304,43 @@ namespace PIC16F8X
         #region FileRegister
         private void FileRegister_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            //ToDo
+            var edetingBox = e.EditingElement as TextBox;
+            string newValue = edetingBox.Text;
+
+            if (e.EditAction == DataGridEditAction.Commit)
+            {
+                if (newValue.Length <= 2)
+                {
+
+                    try
+                    {
+                        byte b = (byte)int.Parse(newValue, System.Globalization.NumberStyles.HexNumber); //Convert input to hex
+                        edetingBox.Text = b.ToString("X2");
+                        int row = e.Row.GetIndex();
+                        int column = e.Column.DisplayIndex;
+
+                        Fields.SetRegister((byte)(row * 16 + column), b); // calculate index in array and set data
+                        UpdateUI();
+
+                        if (row > 0)
+                        {
+                            FileRegister.CurrentCell = new DataGridCellInfo(FileRegister.Items[row - 1], FileRegister.Columns[column]);
+                        }
+                    }
+                    catch
+                    {
+                        e.Cancel = true;
+                        (sender as DataGrid).CancelEdit(DataGridEditingUnit.Cell);
+                        MessageBox.Show("Invalid hex value", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    e.Cancel = true;
+                    (sender as DataGrid).CancelEdit(DataGridEditingUnit.Cell);
+                    MessageBox.Show("Only one hexbyte allowed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         #endregion

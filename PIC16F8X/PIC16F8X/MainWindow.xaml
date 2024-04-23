@@ -373,10 +373,10 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="LST-File" Height="500" VerticalAlignment="Center" HorizontalAlignment="Left" Width="800">
+                    <GroupBox Grid.Column="0" Header="LST-File" Height="500" MinHeight="525" VerticalAlignment="Center" HorizontalAlignment="Left" Width="800">
                         <DataGrid x:Name="SourceDataGrid" GridLinesVisibility="All" HorizontalGridLinesBrush="#FFE2E2E2" VerticalGridLinesBrush="#FFE2E2E2" SelectionMode="Extended" AutoGenerateColumns="False" 
                                   CanUserSortColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                                   HeadersVisibility="None" FontFamily="Courier New" Background="White"  FontSize="14" FrozenColumnCount="4" RowHeaderWidth="0"
@@ -408,15 +408,17 @@
                         </DataGrid>
                     </GroupBox>
                     
-                    <GroupBox Grid.Column="1" Header="Fileregister" MinWidth="400pt"  Width="auto" Height="auto">
+                    <GroupBox Grid.Column="1" Header="Fileregister" MinWidth="380pt"  Width="auto" Height="auto">
 
                         <DataGrid x:Name="FileRegister" HeadersVisibility="None"
                                   CellStyle="{StaticResource FileRegisterCellStyle}"
                                   dataGrid2D:ItemsSource.Array2D="{Binding FileRegisterData}"
                                   dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding FileRegisterColumns}"
                                   dataGrid2D:ItemsSource.RowHeadersSource="{Binding FileRegisterRows}"
+                                  FontStyle="Normal" FontWeight="Normal" FontSize="20"
                                   AutoGenerateColumns="False"
                                   CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionUnit="Cell" CanUserSortColumns="False" GridLinesVisibility="All" HorizontalGridLinesBrush="#FFCBCBCB" VerticalGridLinesBrush="#FFCBCBCB" CanUserReorderColumns="False" SelectionMode="Single" Foreground="Black" CanUserAddRows="False" CanUserDeleteRows="False"
+                                  CellEditEnding="FileRegister_CellEditEnding"
                                   EnableColumnVirtualization="true" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
                                   VirtualizingPanel.IsVirtualizing="True">
                             <DataGrid.Columns>

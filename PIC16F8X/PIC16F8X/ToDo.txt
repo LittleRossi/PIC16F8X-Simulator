@@ -1,7 +1,5 @@
 ﻿ToDo:
- - ToDo´s entfernen
- - buttons
- - fileregister Edit
+ - File Register Header Column- und RowHeader anzeigen
 
 
 Tests:
