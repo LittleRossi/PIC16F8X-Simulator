@@ -10,6 +10,7 @@ using System.Windows.Input;
 using PIC16F8X.helpfunctions;
 using System.Collections.Specialized;
 using System.Linq;
+using System;
 
 namespace PIC16F8X
 {
@@ -17,6 +18,7 @@ namespace PIC16F8X
     {
         private readonly MainWindowViewModel View;
         private readonly Timer StepTimer;
+        private LSTFile lSTFile;
 
         public MainWindow()
         {
@@ -132,18 +134,74 @@ namespace PIC16F8X
 
         public void UpdateUIWithoutFileReg()
         {
-            // set the local model data to the viewModel
+            // set the local model data to the ViewModel
 
             View.TrisA = new ObservableCollection<bool>(HelpFunctions.ConvertByteToBoolArray(Fields.GetRegister(Registers.TRISA)));
             View.TrisB = new ObservableCollection<bool>(HelpFunctions.ConvertByteToBoolArray(Fields.GetRegister(Registers.TRISB)));
             View.PortA = new ObservableCollection<bool>(HelpFunctions.ConvertByteToBoolArray(Fields.GetRegister(Registers.PORTA)));
             View.PortB = new ObservableCollection<bool>(HelpFunctions.ConvertByteToBoolArray(Fields.GetRegister(Registers.PORTB)));
+            View.TrisA.CollectionChanged += new NotifyCollectionChangedEventHandler(TrisAChanged);
+            View.TrisB.CollectionChanged += new NotifyCollectionChangedEventHandler(TrisBChanged);
+            View.PortA.CollectionChanged += new NotifyCollectionChangedEventHandler(PortAChanged);
+            View.PortB.CollectionChanged += new NotifyCollectionChangedEventHandler(PortBChanged);
+
+            View.Status = new ObservableCollection<string>(HelpFunctions.ConvertByteToStringArray(Fields.GetRegister(Registers.STATUS)));
+            View.Option = new ObservableCollection<string>(HelpFunctions.ConvertByteToStringArray(Fields.GetRegister(Registers.OPTION)));
+            View.Intcon = new ObservableCollection<string>(HelpFunctions.ConvertByteToStringArray(Fields.GetRegister(Registers.INTCON)));
+
+            View.StackDisplay = new ObservableCollection<string>(Fields.GetStack().Select(x => x.ToString("D4")).ToArray());
+
+            View.SFRValues[0] = Fields.GetRegisterW().ToString("X2");
+            View.SFRValues[1] = Fields.GetRegister(Registers.PCL).ToString("X2");
+            View.SFRValues[2] = Fields.GetRegister(Registers.PCLATH).ToString("X2");
+            View.SFRValues[3] = Fields.GetPc().ToString("D2");
+            View.SFRValues[4] = Fields.GetRegister(Registers.STATUS).ToString("X2");
+            View.SFRValues[5] = Fields.GetRegister(Registers.FSR).ToString("X2");
+            View.SFRValues[6] = Fields.GetRegister(Registers.OPTION).ToString("X2");
+            View.SFRValues[7] = Fields.GetRegister(Registers.TRM0).ToString("X2");
+            View.SFRValues[8] = "1: " + Fields.GetPrePostScalerRatio();
+
+            if (Fields.GetRegisterBit(Registers.OPTION, Flags.Option.PSA))
+            {
+                View.PrePostScalerText = "Postscaler"; // Postscaler is assigned to WatchDogTimer
+            }
+            else
+            {
+                View.PrePostScalerText = "Prescaler"; // Prescaler is assigned to TMR0
+            }
+
+            if (StepTimer.Enabled)
+            {
+                View.StartStopButtonText = "Stop"; // is programm is running, set the text for Button to Stop
+            }
+            else
+            {
+                View.StartStopButtonText = "Start"; // is programm is not running, set the text for Button to Start
+            }
+
+            if (Fields.GetPc() < Fields.GetProgramm().Count)
+            {
+                View.SFRValues[9] = Instructions.InstructionDecoder(Fields.GetProgramm()[Fields.GetPc()]).ToString(); // set the current command
+            }
+            else
+            {
+                View.SFRValues[9] = "NA";
+            }
+
+            View.Runtime = Fields.GetRuntime();
+            View.Watchdog = Fields.GetWatchdog();
+
+            if (lSTFile != null)
+            {
+                HighLightLine(Fields.GetPc());
+            }
         }
 
         #endregion
 
 
 
+        #region Control Buttons
         private void Button_StartStop_Click(object sender, RoutedEventArgs e)
         {
             //ToDo
@@ -158,6 +216,7 @@ namespace PIC16F8X
         {
             //ToDo
         }
+        #endregion
 
 
 
@@ -184,6 +243,20 @@ namespace PIC16F8X
         }
         #endregion
 
+
+        #region HelpFunctions
+        private void HighLightLine(int pcl)
+        {
+            try
+            {
+                lSTFile.HighlightLine(pcl);
+                SourceDataGrid.ScrollIntoView(SourceDataGrid.Items[6]);
+                SourceDataGrid.ScrollIntoView(SourceDataGrid.Items[lSTFile.GetSourceLineIndexFromPC(pcl)]);
+            }
+            catch (Exception)
+            { }
+        }
+        #endregion
 
     }
 }

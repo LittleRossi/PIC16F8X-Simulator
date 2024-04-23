@@ -71,5 +71,17 @@ namespace PIC16F8X.helpfunctions
             }
             return res;
         }
+
+        public static string[] ConvertByteToStringArray(byte b)
+        {
+            string[] res = new string[8];
+
+            for (int i = 0; i < 8; i++)
+            {
+                res[i] = (b & (1 << i)) == 0 ? "0" : "1";
+            }
+
+            return res;
+        }
     }
 }
