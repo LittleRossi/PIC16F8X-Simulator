@@ -1,13 +1,7 @@
 ﻿ToDo:
-- Window (UI)
-- Funktionen für Buttons in UI
-- Funktionen zum updaten der UI
-- Programmstep
-- StepTimer
-
-
-
- ToDo´s entfernen
+ - ToDo´s entfernen
+ - buttons
+ - fileregister Edit
 
 
 Tests:

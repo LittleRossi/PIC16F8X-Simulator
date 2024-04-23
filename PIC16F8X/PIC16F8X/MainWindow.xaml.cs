@@ -11,6 +11,7 @@ using PIC16F8X.helpfunctions;
 using System.Collections.Specialized;
 using System.Linq;
 using System;
+using System.ComponentModel;
 
 namespace PIC16F8X
 {
@@ -19,6 +20,8 @@ namespace PIC16F8X
         private readonly MainWindowViewModel View;
         private readonly Timer StepTimer;
         private LSTFile lSTFile;
+        private bool OutOfBoundMessageShown = false;
+        private DateTime LastRegisterUpdate;
 
         public MainWindow()
         {
@@ -30,12 +33,7 @@ namespace PIC16F8X
             StepTimer = new Timer(View.SimSpeed); // Set the time between steps in the programm
             StepTimer.AutoReset = true;
             StepTimer.Elapsed += new ElapsedEventHandler(RunTimerEvent); // throws an event and calls the function every time the timer has elapsed
-
-            //TODO
-
-
-            // END TODO
-
+            View.PropertyChanged += UpdateTimerInterval;
 
             // initialize UI
             InitializeComponent();
@@ -49,7 +47,56 @@ namespace PIC16F8X
         #region RunTime functions
         private void RunTimerEvent(object source, ElapsedEventArgs e)
         {
-            //ToDo
+            // Event that is thrown every time the StepTimer elapses
+
+            ProgramStep(); //processes one Instruction
+
+            Dispatcher.Invoke(() =>
+            {
+                if (DateTime.Now.Subtract(LastRegisterUpdate).TotalSeconds > 1)
+                {
+                    // Refresh Fileregister every 1 second
+                    UpdateUI();
+                    LastRegisterUpdate = DateTime.Now;
+                }
+                else
+                {
+                    // refresh UI but without FileRegister
+                    UpdateUIWithoutFileReg();
+                }
+
+                // Check if Programm is out of range
+                CheckProgrammOutOfRange();
+            });
+        }
+
+        private void ProgramStep()
+        {
+            try
+            {
+                // Execute one Instruction
+                InstructionProcessor.ProcessOnePCStep();
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Stop();
+                UpdateUI();
+
+                Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show("Index of used Register out of range.", "Index out of range"); // throw an error that index of register is out of range
+                });
+                return;
+            }
+
+            if (CheckIfPCIsOutOfRange())
+            {
+                if (!OutOfBoundMessageShown) StopAndUpdate();
+            }
+            else if (CheckIfBreakpointIsHit())
+            {
+                StopAndUpdate();
+            }
         }
         #endregion
 
@@ -70,16 +117,46 @@ namespace PIC16F8X
                 Reset(); // reset all Data and update UI
                 LSTFile lSTFile = new LSTFile(dialog.FileName); // read and initialise programm in programmstorage as list of Commands
 
-                //ToDo: show programm in UI
+                SourceDataGrid.ItemsSource = lSTFile.GetSourceLines(); // set the data to the LST View
+                SourceDataGrid.Columns[4].Width = 0; // Reset comment width
+                SourceDataGrid.UpdateLayout();
+                SourceDataGrid.Columns[4].Width = DataGridLength.Auto; // responsive width matching size of content
+                UpdateUI();
             }
+        }
+        #endregion
+
+        #region Control functions
+        private void Start()
+        {
+            // Checks if the programm is initialized and starts the Steptimer to proceed Instructions
+            if (Fields.IsProgrammInitialized())
+            {
+                FileRegister.IsReadOnly = true;
+                StepTimer.Start();
+            }
+        }
+        private void Stop()
+        {
+            StepTimer.Stop();
+            Dispatcher.Invoke(() =>
+            {
+                FileRegister.IsReadOnly = false;
+            });
+        }
+        private void StopAndUpdate()
+        {
+            Stop();
+            Dispatcher.Invoke(() =>
+            {
+                UpdateUI();
+            });
         }
         private void Reset()
         {
+            Stop();
             Fields.ResetData();
-            // ToDo:
-            //  - stop
-            //  - UI Update
-
+            UpdateUI();
         }
         #endregion
 
@@ -212,28 +289,56 @@ namespace PIC16F8X
             }
         }
 
+        private void UpdateTimerInterval(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SimSpeed")
+            {
+                StepTimer.Interval = View.SimSpeed; // set the Steptimer to the value of SimSpeed
+            }
+        }
+
         #endregion
 
+        #region FileRegister
+        private void FileRegister_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            //ToDo
+        }
 
+        #endregion
 
         #region Control Buttons
         private void Button_StartStop_Click(object sender, RoutedEventArgs e)
         {
-            //ToDo
+            if (StepTimer.Enabled)
+            {
+                // if programm is currently running => Stop it
+                Stop();
+                UpdateUI();
+            }
+            else
+            {
+                // if programm is not running => start it
+                Start();
+            }
         }
 
         private void Button_Step_Click(object sender, RoutedEventArgs e)
         {
-            //ToDo
+            if (Fields.IsProgrammInitialized())
+            {
+                ProgramStep(); // execute one Instruction
+                UpdateUI();
+                CheckIfPCIsOutOfRange();
+            }
         }
 
         private void Button_Reset_Click(object sender, RoutedEventArgs e)
         {
-            //ToDo
+            Reset();
+            UpdateUI();
         }
         #endregion
-
-
 
         #region Checkbox ChangedHandlers
         private void TrisAChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -258,7 +363,6 @@ namespace PIC16F8X
         }
         #endregion
 
-
         #region HelpFunctions
         private void HighLightLine(int pcl)
         {
@@ -271,11 +375,30 @@ namespace PIC16F8X
             catch (Exception)
             { }
         }
-        #endregion
-
-        private void FileRegister_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private bool CheckIfPCIsOutOfRange()
         {
-            //ToDo
+            return (Fields.GetPc() >= Fields.GetProgramm().Count);
         }
+        private bool CheckIfBreakpointIsHit()
+        {
+            return (lSTFile.LineHasBreakpoint(Fields.GetPc()));
+        }
+        private void CheckProgrammOutOfRange()
+        {
+            if (CheckIfPCIsOutOfRange())
+            {
+                if (!OutOfBoundMessageShown)
+                {
+                    // if message is not shown, show it
+                    OutOfBoundMessageShown = true;
+                    MessageBox.Show("PC out of Programm range. Please end programm with endless loop", "programm out of range", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            else
+            {
+                OutOfBoundMessageShown = false;
+            }
+        }
+        #endregion
     }
 }
