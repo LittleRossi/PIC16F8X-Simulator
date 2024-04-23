@@ -129,7 +129,7 @@ namespace PIC16F8X
         public void UpdateUI()
         {
             UpdateUIWithoutFileReg();
-            // ToDO
+            UpdateFileRegister();
         }
 
         public void UpdateUIWithoutFileReg()
@@ -197,6 +197,21 @@ namespace PIC16F8X
             }
         }
 
+        public void UpdateFileRegister()
+        {
+            string[,] data = new string[16, 16];
+
+            int index = 0;
+
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    data[i, j] = Fields.GetAllRegister()[index++].ToString("X2");
+                }
+            }
+        }
+
         #endregion
 
 
@@ -258,5 +273,9 @@ namespace PIC16F8X
         }
         #endregion
 
+        private void FileRegister_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            //ToDo
+        }
     }
 }
