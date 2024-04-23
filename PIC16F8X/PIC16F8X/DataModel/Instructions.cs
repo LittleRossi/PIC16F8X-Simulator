@@ -34,8 +34,8 @@
                 case 7: return Instruction.ADDWF;
                 case 5: return Instruction.ANDWF;
                 case 1:
-                    if ((command.GetLowByte() & 128) == 1) return Instruction.CLRF;
-                    else return Instruction.CLRW;
+                    if ((command.GetLowByte() & 128) == 0) return Instruction.CLRW;
+                    else return Instruction.CLRF;
                 case 9: return Instruction.COMF;
                 case 3: return Instruction.DECF;
                 case 11: return Instruction.DECFSZ;

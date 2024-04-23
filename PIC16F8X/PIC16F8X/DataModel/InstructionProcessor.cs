@@ -393,7 +393,7 @@ namespace PIC16F8X.DataModel
         {
             byte k = com.GetLowByte();
 
-            byte result = ArithmeticLogicUnit.BitwiseSubstract(Fields.GetRegisterW(), k);
+            byte result = ArithmeticLogicUnit.BitwiseSubstract(k, Fields.GetRegisterW());
 
             Flags.CheckZFlag(result);
 

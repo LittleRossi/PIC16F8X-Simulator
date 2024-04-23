@@ -1,7 +1,4 @@
-﻿ToDo:
- - File Register Header Column- und RowHeader anzeigen
-
-
-Tests:
+﻿Tests:
 - test files durchführen
 - Bewertung kontrollieren umsetzung
+- Doku schreiben

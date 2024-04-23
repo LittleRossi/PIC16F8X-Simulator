@@ -55,7 +55,7 @@
             }
 
             // set DigitCarry flag if either b1 or b2 are zero or the 4th low order bit overflows
-            if ((((b1 & 15) + (b2 + 15)) & 16) == 16 || b1 == 0 || b2 == 0)
+            if (((((b1 & 15) + (b2 & 15)) & 16) == 16) || b1 == 0 || b2 == 0)
             {
                 Fields.SetSingleRegisterBit(Registers.STATUS, Flags.Status.DC, true);
             }
