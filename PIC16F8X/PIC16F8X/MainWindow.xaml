@@ -3,15 +3,54 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dataGrid2D="http://gu.se/DataGrid2D"
         xmlns:viewmodel="clr-namespace:PIC16F8X.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="PIC16F8X Simulator" SizeToContent="WidthAndHeight" Margin="-2,0,0,0" ResizeMode="CanMinimize">
 
     <Window.Resources>
+        <Style x:Key="FileRegisterTextBox" TargetType="TextBox">
+            <Setter Property="MaxLength" Value="2"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
         <Style x:Key="StackTextBlock" TargetType="{x:Type TextBlock}">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Padding" Value="10,2,10,2"/>
             <Setter Property="Margin" Value="0"/>
+        </Style>
+        <Style x:Key="SourceFileCellStyle" TargetType="DataGridCell">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+        <Style x:Key="FileRegisterCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="OrangeRed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SourceFileCellHighlight" TargetType="DataGridCell" BasedOn="{StaticResource SourceFileCellStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Active}" Value="True">
+                    <Setter Property="BorderBrush" Value="DarkOrange" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasCommand}" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SourceFileAllowClick" TargetType="DataGridCell" BasedOn="{StaticResource SourceFileCellStyle}">
+            <Setter Property="IsHitTestVisible" Value="True"/>
         </Style>
     </Window.Resources>
     
@@ -32,6 +71,8 @@
 
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -243,9 +284,6 @@
                         </GroupBox>
                     </Grid>
 
-
-
-
                     <GroupBox  Grid.Column="3" Header="Stack" MinWidth="100" MinHeight="100px">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" UseLayoutRounding="True">
                             <TextBlock Text="{Binding StackDisplay[0]}" Style="{StaticResource StackTextBlock}"/>
@@ -259,10 +297,144 @@
                         </StackPanel>
                     </GroupBox>
 
+                        <GroupBox Grid.Column="4" Header="Settings" Width="auto" MinHeight="150px" MinWidth="180px">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <DockPanel Grid.Row="0" VerticalAlignment="Center">
+                                    <TextBlock Margin="0,0,15,0" VerticalAlignment="Center">Clock Speed:</TextBlock>
+                                    <ComboBox 
+                                            ItemsSource="{Binding ClockSpeedPairs}"
+                                            SelectedValuePath="Key"
+                                            DisplayMemberPath="Value"
+                                            IsSynchronizedWithCurrentItem="True"
+                                            SelectedIndex="0"
+                                            SelectedValue="{Binding ClockSpeed}"/>
+                                </DockPanel>
+                                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                                    <DockPanel Margin="0,5,0,5">
+                                        <DockPanel>
+                                            <TextBlock>Runtime:</TextBlock>
+                                        </DockPanel>
+                                        <DockPanel HorizontalAlignment="Right">
+                                            <TextBlock HorizontalAlignment="Right" Text="{Binding Runtime}" FontWeight="Bold"/>
+                                            <TextBlock HorizontalAlignment="Right" Text="µs" FontWeight="Bold"/>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel  Margin="0,5,0,5">
+                                        <DockPanel>
+                                            <TextBlock>Watchdog:</TextBlock>
+                                        </DockPanel>
+                                        <DockPanel HorizontalAlignment="Right">
+                                            <TextBlock HorizontalAlignment="Right" Text="{Binding Watchdog}" FontWeight="Bold"/>
+                                            <TextBlock HorizontalAlignment="Right" Text="µs" FontWeight="Bold"/>
+                                        </DockPanel>
+                                    </DockPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" VerticalAlignment="Center">
+                                    <CheckBox IsChecked="{Binding WatchdogEnabled}">Enable Watchdog</CheckBox>
+                                </StackPanel>
+                                <StackPanel Grid.Row="3" VerticalAlignment="Center">
+                                    <DockPanel Margin="0,5,0,5">
+                                        <DockPanel>
+                                            <TextBlock>Simulation Speed:</TextBlock>
+                                        </DockPanel>
+                                        <DockPanel HorizontalAlignment="Right">
+                                            <TextBox Text="{Binding SimSpeed}" KeyDown="TextBox_UpdateSource" MinWidth="33" Margin="5,0,3,0" TextAlignment="Right"/>
+                                            <TextBlock Text="ms"/>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <Slider IsDirectionReversed="True" Minimum="10" Maximum="1000" TickPlacement="BottomRight" TickFrequency="200" Value="{Binding SimSpeed}" Name="SpeedSlider" LargeChange="100"/>
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
 
 
+                    <GroupBox Grid.Column="5" Header="Control" Width="auto" MinHeight="150px">
+                        <Grid Margin="10,0,10,0" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Row="0" Content="{Binding StartStopButtonText}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70px" Height="30px" Click="Button_StartStop_Click"></Button>
+                            <Button Grid.Row="1" Content="Step" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70px" Height="30px" Click="Button_Step_Click"></Button>
+                            <Button Grid.Row="2" Content="Reset" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70px" Height="30px" Click="Button_Reset_Click"></Button>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
 
 
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="LST-File" Height="500" VerticalAlignment="Center" HorizontalAlignment="Left" Width="800">
+                        <DataGrid x:Name="SourceDataGrid" GridLinesVisibility="All" HorizontalGridLinesBrush="#FFE2E2E2" VerticalGridLinesBrush="#FFE2E2E2" SelectionMode="Extended" AutoGenerateColumns="False" 
+                                  CanUserSortColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                                  HeadersVisibility="None" FontFamily="Courier New" Background="White"  FontSize="14" FrozenColumnCount="4" RowHeaderWidth="0"
+                                  ScrollViewer.CanContentScroll="True" EnableRowVirtualization="True" EnableColumnVirtualization="False" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True"
+                                  CellStyle="{StaticResource SourceFileCellStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Breakpoint"  Width="20pt" IsReadOnly="False" CellStyle="{StaticResource SourceFileAllowClick}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DataTemplate.Resources>
+                                                <Style TargetType="CheckBox">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasCommand}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataTemplate.Resources>
+                                            <CheckBox IsChecked="{Binding Breakpoint, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Line" Binding="{Binding LineNumber}" Width="auto" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Label" Binding="{Binding Label}" MinWidth="40" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Command" Binding="{Binding Command}" MinWidth="140" IsReadOnly="True" CellStyle="{StaticResource SourceFileCellHighlight}"/>
+                                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" IsReadOnly="True"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    
+                    <GroupBox Grid.Column="1" Header="Fileregister" MinWidth="400pt"  Width="auto" Height="auto">
+
+                        <DataGrid x:Name="FileRegister"  
+                                CellStyle="{StaticResource FileRegisterCellStyle}"
+                                ItemsSource="{Binding FileRegisterData}"
+                                  
+
+                            
+                                AutoGenerateColumns="False"
+                                FontStyle="Normal" FontFamily="Courier New" FontWeight="Normal" FontSize="15"
+                                CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionUnit="Cell" CanUserSortColumns="False" GridLinesVisibility="All" HorizontalGridLinesBrush="#FFCBCBCB" VerticalGridLinesBrush="#FFCBCBCB" CanUserReorderColumns="False" SelectionMode="Single" Foreground="Black" CanUserAddRows="False" CanUserDeleteRows="False"
+                                CellEditEnding="FileRegister_CellEditEnding"
+                                EnableColumnVirtualization="true" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                                VirtualizingPanel.IsVirtualizing="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C0}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C1}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C2}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C3}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C4}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C5}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C6}"/>
+                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C7}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                    </GroupBox>
+                    
                 </Grid>
             </Grid>
         </StackPanel>

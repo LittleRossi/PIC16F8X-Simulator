@@ -1,4 +1,6 @@
-﻿namespace PIC16F8X.helpfunctions
+﻿using System;
+
+namespace PIC16F8X.helpfunctions
 {
     public static class HelpFunctions
     {
@@ -38,6 +40,36 @@
                 'F' => 15,
                 _ => -1
             };
+        }
+
+        public static bool[] ConvertByteToBoolArray(byte b)
+        {
+            // Converts a Byte to an array of bools, showing if each bit is set or not
+
+            bool[] res = new bool[8];
+
+            for (int i = 0; i < 8; i++)
+            {
+                res[i] = (b & (1 << i)) == 0 ? false : true;
+            }
+            return res;
+        }
+
+        public static byte ConvertBoolArrayToByte(bool[] boolArray)
+        {
+            byte res = 0;
+
+            int index = 8 - boolArray.Length;
+
+            Array.Reverse(boolArray);
+
+            foreach(bool b in boolArray)
+            {
+                if (b)
+                    res |= (byte)(1 << (7 - index));
+                index++;
+            }
+            return res;
         }
     }
 }
