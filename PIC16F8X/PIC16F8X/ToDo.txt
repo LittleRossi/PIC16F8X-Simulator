@@ -24,7 +24,8 @@ PSA Sagt ob WDT oder TMRO
 
 
 Testen:
-1 - 9 getestet
+1 - 11 getestet
 
 KnownIssues:
 - TestDatei 7 => Error in Timer, der bis 16 zählen soll
+- TestDatei 11 => Am ende wird alles auf 0 gesetzt => Überlauf

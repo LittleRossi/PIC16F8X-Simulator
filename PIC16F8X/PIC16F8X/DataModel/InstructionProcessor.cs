@@ -110,7 +110,7 @@ namespace PIC16F8X.DataModel
             byte f = (byte)(com.GetLowByte() & 127);
             byte d = (byte)(com.GetLowByte() & 128);
 
-            // get the value out of the Register and decrement it
+            // get the value out of the Register and increment it
             byte result = (byte)(Fields.GetRegister(Fields.BankAddressResolution(f)) + 1);
 
             if (result == 0)
