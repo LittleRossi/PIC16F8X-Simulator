@@ -132,7 +132,7 @@ namespace PIC16F8X
             // Checks if the programm is initialized and starts the Steptimer to proceed Instructions
             if (Fields.IsProgrammInitialized())
             {
-                FileRegister.IsReadOnly = true;
+                FileRegister.IsReadOnly = true; // Set UI Readonly
                 StepTimer.Start();
             }
         }
@@ -141,7 +141,7 @@ namespace PIC16F8X
             StepTimer.Stop();
             Dispatcher.Invoke(() =>
             {
-                FileRegister.IsReadOnly = false;
+                FileRegister.IsReadOnly = false; // Set UI editable
             });
         }
         private void StopAndUpdate()
@@ -202,7 +202,7 @@ namespace PIC16F8X
         }
         #endregion
 
-        #region UI-Actions
+        #region Update-Actions
         public void UpdateUI()
         {
             UpdateUIWithoutFileReg();
@@ -287,6 +287,8 @@ namespace PIC16F8X
                     data[i, j] = Fields.GetAllRegister()[index++].ToString("X2");
                 }
             }
+
+            View.FileRegisterData = data; // Set Data into View DataSource
         }
 
         private void UpdateTimerInterval(object sender, PropertyChangedEventArgs e)

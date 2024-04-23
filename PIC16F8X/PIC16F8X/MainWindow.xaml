@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dataGrid2D="http://gu.se/DataGrid2D"
+        
         xmlns:viewmodel="clr-namespace:PIC16F8X.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="PIC16F8X Simulator" SizeToContent="WidthAndHeight" Margin="-2,0,0,0" ResizeMode="CanMinimize">
@@ -409,29 +410,40 @@
                     
                     <GroupBox Grid.Column="1" Header="Fileregister" MinWidth="400pt"  Width="auto" Height="auto">
 
-                        <DataGrid x:Name="FileRegister"  
-                                CellStyle="{StaticResource FileRegisterCellStyle}"
-                                ItemsSource="{Binding FileRegisterData}"
-                                  
-
-                            
-                                AutoGenerateColumns="False"
-                                FontStyle="Normal" FontFamily="Courier New" FontWeight="Normal" FontSize="15"
-                                CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionUnit="Cell" CanUserSortColumns="False" GridLinesVisibility="All" HorizontalGridLinesBrush="#FFCBCBCB" VerticalGridLinesBrush="#FFCBCBCB" CanUserReorderColumns="False" SelectionMode="Single" Foreground="Black" CanUserAddRows="False" CanUserDeleteRows="False"
-                                CellEditEnding="FileRegister_CellEditEnding"
-                                EnableColumnVirtualization="true" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
-                                VirtualizingPanel.IsVirtualizing="True">
+                        <DataGrid x:Name="FileRegister" HeadersVisibility="None"
+                                  CellStyle="{StaticResource FileRegisterCellStyle}"
+                                  dataGrid2D:ItemsSource.Array2D="{Binding FileRegisterData}"
+                                  dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding FileRegisterColumns}"
+                                  dataGrid2D:ItemsSource.RowHeadersSource="{Binding FileRegisterRows}"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionUnit="Cell" CanUserSortColumns="False" GridLinesVisibility="All" HorizontalGridLinesBrush="#FFCBCBCB" VerticalGridLinesBrush="#FFCBCBCB" CanUserReorderColumns="False" SelectionMode="Single" Foreground="Black" CanUserAddRows="False" CanUserDeleteRows="False"
+                                  EnableColumnVirtualization="true" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                                  VirtualizingPanel.IsVirtualizing="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C0}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C1}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C2}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C3}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C4}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C5}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C6}"/>
-                                <DataGridTextColumn EditingElementStyle="{StaticResource FileRegisterTextBox}" Binding="{Binding C7}"/>
+                                <DataGridTextColumn Binding="{Binding C0}"/>
+                                <DataGridTextColumn Binding="{Binding C1}"/>
+                                <DataGridTextColumn Binding="{Binding C2}"/>
+                                <DataGridTextColumn Binding="{Binding C3}"/>
+                                <DataGridTextColumn Binding="{Binding C4}"/>
+                                <DataGridTextColumn Binding="{Binding C5}"/>
+                                <DataGridTextColumn Binding="{Binding C6}"/>
+                                <DataGridTextColumn Binding="{Binding C7}"/>
+                                <DataGridTextColumn Binding="{Binding C8}"/>
+                                <DataGridTextColumn Binding="{Binding C9}"/>
+                                <DataGridTextColumn Binding="{Binding C10}"/>
+                                <DataGridTextColumn Binding="{Binding C11}"/>
+                                <DataGridTextColumn Binding="{Binding C12}"/>
+                                <DataGridTextColumn Binding="{Binding C13}"/>
+                                <DataGridTextColumn Binding="{Binding C14}"/>
+                                <DataGridTextColumn Binding="{Binding C15}"/>
                             </DataGrid.Columns>
+
                         </DataGrid>
+
+
+
+
+
 
                     </GroupBox>
                     

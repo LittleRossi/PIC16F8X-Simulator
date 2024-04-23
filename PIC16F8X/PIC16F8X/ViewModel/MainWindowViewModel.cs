@@ -132,9 +132,9 @@ namespace PIC16F8X.ViewModel
 
         public MainWindowViewModel()
         {
-            FileRegisterColumns = new string[] { "+0", "+1", "+2", "+3", "+4", "+5", "+6", "+7" };
-            FileRegisterRows = new string[] { "00", "08", "10", "18", "20", "28", "30", "38", "40", "48", "50", "58", "60", "68", "70", "78", "80", "88", "90", "98", "A0", "A8", "B0", "B8", "C0", "C8", "D0", "D8", "E0", "E8", "F0", "F8" };
-            FileRegisterData = new string[32, 8];
+            FileRegisterColumns = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" };
+            FileRegisterRows = new string[] { "B0: 0", "B0: 10", "B0: 20", "B0: 30", "B0: 40", "B0: 50", "B0: 60", "B0: 70", "B1: 0", "B1: 10", "B1: 20", "B1: 30", "B1: 40", "B1: 50", "B1: 60", "B1: 70" };
+            FileRegisterData = new string[16, 16];
             ClockSpeedPairs = new KeyValuePair<int, string>[]{
                 new KeyValuePair<int, string>(4000000, "4 MHz"),
                 new KeyValuePair<int, string>(1000000, "1 MHz"),
