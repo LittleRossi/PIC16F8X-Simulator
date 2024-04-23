@@ -4,26 +4,27 @@
 - Doku schreiben
 
 
-Nachschauen
-- Wie wird Prescaler Ratio gesetzt?
-PSA, PS0 PS1 etc.
-
-1 : 4 => jeder 4. Befehlstakt wird Timer erhöht
-
-post- und prescaler erläutern
-PSA Sagt ob WDT oder TMRO
-
-
-
-KnownIssues:
-- TestDatei 7 => Error in Timer, der bis 16 zählen soll
-
-
 Wichtig:
 - Testdatei 9: ProcessWatchDogTimer(): (limit - 2303000) setzen, da man sonst unendlich wartet!!!
+
+
+
+
 
 
 Doku:
 
 - Fileregister wird nur alle 1 Sekunde aktualisiert
 - Highlight auf Command zeigt den, der als nächstes ausgeführt wird
+
+- WPF erklären
+1 : 4 => jeder 4. Befehlstakt wird Timer erhöht
+post- und prescaler erläutern
+PSA Sagt ob WDT oder TMRO
+
+
+Testen:
+1 - 9 getestet
+
+KnownIssues:
+- TestDatei 7 => Error in Timer, der bis 16 zählen soll
