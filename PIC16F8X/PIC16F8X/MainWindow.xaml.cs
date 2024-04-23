@@ -115,7 +115,7 @@ namespace PIC16F8X
             if (dialog.ShowDialog() == true)
             {
                 Reset(); // reset all Data and update UI
-                LSTFile lSTFile = new LSTFile(dialog.FileName); // read and initialise programm in programmstorage as list of Commands
+                lSTFile = new LSTFile(dialog.FileName); // read and initialise programm in programmstorage as list of Commands
 
                 SourceDataGrid.ItemsSource = lSTFile.GetSourceLines(); // set the data to the LST View
                 SourceDataGrid.Columns[4].Width = 0; // Reset comment width
@@ -417,9 +417,9 @@ namespace PIC16F8X
         {
             return (Fields.GetPc() >= Fields.GetProgramm().Count);
         }
-        private bool CheckIfBreakpointIsHit()
+        public bool CheckIfBreakpointIsHit()
         {
-            return (lSTFile.LineHasBreakpoint(Fields.GetPc()));
+            return lSTFile.LineHasBreakpoint(Fields.GetPc());
         }
         private void CheckProgrammOutOfRange()
         {

@@ -9,6 +9,7 @@ namespace PIC16F8X.DataModel
         readonly ObservableCollection<SourceLine> sourceLines = new ObservableCollection<SourceLine>();
         readonly int[] linesWithCommands;
         int LastHighlightedLineIndex = 0;
+        private LSTFile lSTFile;
 
         public LSTFile(string path)
         {

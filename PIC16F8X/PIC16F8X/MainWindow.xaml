@@ -58,7 +58,7 @@
     
         <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Datei">
+            <MenuItem Header="_File">
                 <MenuItem x:Name="MenuOpen" Header="_Open" Click="MenuOpen_Click"/>
             </MenuItem>
         </Menu>
