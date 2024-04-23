@@ -90,6 +90,8 @@ namespace PIC16F8X.DataModel
                 Fields.IncreasePC();
                 SkipOneCycle();
             }
+
+            Fields.DirectionalWrite(d, f, result);
         }
         public static void INCF(Command com)
         {
