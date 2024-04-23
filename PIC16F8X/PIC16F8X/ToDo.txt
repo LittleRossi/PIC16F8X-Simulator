@@ -25,6 +25,8 @@ PSA Sagt ob WDT oder TMRO
 
 Testen:
 1 - 11 getestet
+13
+14
 
 KnownIssues:
 - TestDatei 7 => Error in Timer, der bis 16 zählen soll
