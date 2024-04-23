@@ -304,11 +304,18 @@ namespace PIC16F8X.DataModel
                     // calculate Limit with current PreScaler limit
                     limit *= GetPrePostScalerRatio();
                 }
-                if (watchdog >= limit)
+                if (watchdog >= limit) // to force an earlyer (instead of 2.3s interrupt) => (limit - 2303000)
                 {
                     // execute a RESET caused by the WatchDog
                     WatchDogTimerReset();
                 }
+
+                // USE WHEN TESTING WATCHDOGTIMER RESET TO AVOID WAITING A LONG AMOUNT OF TIME!!!
+                //if (watchdog >= (limit - 2303000)) // to force an earlyer (instead of 2.3s interrupt) => (limit - 2303000)
+                //{
+                //    // execute a RESET caused by the WatchDog
+                //    WatchDogTimerReset();
+                //}
             }
         }
         #endregion
