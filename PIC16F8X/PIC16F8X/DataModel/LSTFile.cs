@@ -164,7 +164,7 @@ namespace PIC16F8X.DataModel
 
         public bool LineHasBreakpoint(int pc)
         {
-            return sourceLines[GetSourceLineIndexFromPC(pc)].Breakpoint; //Return if a line has a breakpoint
+            return sourceLines[GetIndexInFileOfPCCommand(pc)].Breakpoint; //Return if a line has a breakpoint
         }
     }
 

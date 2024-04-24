@@ -46,6 +46,5 @@ PORTB Latch (TRISB) => Bei 0x06
 
 
 ####################
-- Breakpoints gehen nicht
 - anfangs wird nicht auf ersten Befehl gehighlited
 - View Fenster verfolgt nciht aktuellen Index
