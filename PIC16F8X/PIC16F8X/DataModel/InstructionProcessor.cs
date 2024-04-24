@@ -303,10 +303,11 @@ namespace PIC16F8X.DataModel
         }
         public static void CALL(Command com)
         {
-            byte k1 = com.GetLowByte();
-            byte k2 = (byte)(com.GetHighByte() & 7);
 
-            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2);
+            byte k1 = com.GetLowByte();
+            byte k2 = (byte)(com.GetHighByte() & 7); // Select first three HighByte bits
+
+            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2); // Extract PCLATH<4:3>
 
             // push current PC on Stack
             Fields.PushOnStack();

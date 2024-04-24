@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PIC16F8X.DataModel
 {
     public static class Fields
     {
         //ProgrammCode with List of Class Command
-        private static List<Command> program = new List<Command>();
+        private static List<Command> program = new List<Command>(1024);
 
         //Data Register
         private static byte[] register = new byte[256];
@@ -489,12 +490,27 @@ namespace PIC16F8X.DataModel
 
             if (commandList == null) throw new ArgumentNullException();
 
-            program = new List<Command>();
+
+            // Füllen mit instructions !!!!!!
+
+            // Erstellen einer Liste mit 1024 Commands mit 0 als High und Low Byte als Dummy
+
+            program = new List<Command>(1024);
+
+            for (int i = 0; i < 1024; i++)
+                program.Add(new Command("0000"));
+
+
+
+            //List<string> hexadecimalCommand = Enumerable.Repeat("#", 1024).ToList();
 
             for (int i = 0; i < commandList.Count; i++)
             {
-                Command line = new Command(commandList[i]);
-                program.Add(line);
+                if(commandList[i] != "#")
+                {
+                    Command line = new Command(commandList[i]);
+                    program.Insert(i, line);
+                }
             }
 
             ProgrammInitialized = true;
