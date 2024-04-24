@@ -87,6 +87,17 @@ namespace PIC16F8X.DataModel
 
                 case 0x05:
                     //ToDo: PORTA Latch (TRISA)
+
+                    // Prüfen wie TRISA gerade aussieht
+                    // Tris: 0 => Ausgang
+                    // Tris: 1 => Eingang
+
+                    // Wenn Bit 2 in Port A gesetzt werden soll
+                    // => prüfen ob 2. Bit in TrisA == 0
+                    // JA (0): Nichts machen, da bereits gesetzt
+                    // NEIN (1): PORTA auf 0 setzen
+
+
                     break;
                 case 0x06:
                     //ToDo: PORTB Latch (TRISB)
