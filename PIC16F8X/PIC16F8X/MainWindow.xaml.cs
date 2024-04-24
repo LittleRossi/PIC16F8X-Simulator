@@ -408,7 +408,7 @@ namespace PIC16F8X
             {
                 lSTFile.HighlightLine(pcl);
                 SourceDataGrid.ScrollIntoView(SourceDataGrid.Items[6]);
-                SourceDataGrid.ScrollIntoView(SourceDataGrid.Items[lSTFile.GetSourceLineIndexFromPC(pcl)]);
+                SourceDataGrid.ScrollIntoView(SourceDataGrid.Items[lSTFile.GetIndexInFileOfPCCommand(pcl)]);
             }
             catch (Exception)
             { }

@@ -12,7 +12,7 @@ namespace PIC16F8X.DataModel
 
 
         readonly int[] linesWithCommands;
-        int LastHighlightedLineIndex = 0;
+        int LastHighlightedLineIndex;
         private LSTFile lSTFile;
 
         public LSTFile(string path)
@@ -55,19 +55,9 @@ namespace PIC16F8X.DataModel
 
                 if (label != "") hasLabel = true;
 
-
-                // calculate the index of the line shown in preview
-                //int index = System.Convert.ToInt32(line.Substring(20).Split(" ")[0]);
-
-                //lineIndexInPreview = index;
-
-
                 // Split the lines into every part and removing all dublicated whitespaces
                 string[] lineComponents = line.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
 
-
-
-                
 
                 // Check if the line contains a hexadecimal Command
                 bool hasCommand = false;
@@ -81,9 +71,6 @@ namespace PIC16F8X.DataModel
                     lineComponents = lineComponents.Skip(2).ToArray(); // Skipt the first two parts, because we already parsed them
                     linesWithCommands.Insert(indexInProgrammStorage, indexInProgrammStorage); // add the index of the line with a command
                     hasCommand = true;
-
-
-                    //lineIndexInPreview = indexInProgrammStorage;
                 }
 
                 if (char.IsWhiteSpace(line, 0))
@@ -133,15 +120,13 @@ namespace PIC16F8X.DataModel
         {
             sourceLines[GetIndexInFileOfPCCommand(LastHighlightedLineIndex)].Active = false; //Set the current line to not active
 
-
             sourceLines[GetIndexInFileOfPCCommand(pc)].Active = true; // set the next line to active
-
 
             LastHighlightedLineIndex = pc;
         }
 
 
-        private int GetIndexInFileOfPCCommand(int pc)
+        public int GetIndexInFileOfPCCommand(int pc)
         {
             // calculate the index in File by using the Linenumber
 
