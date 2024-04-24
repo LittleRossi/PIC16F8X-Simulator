@@ -21,6 +21,6 @@
         public static readonly byte TRISA = 0x85;
         public static readonly byte TRISB = 0x86;
         public static readonly byte EECON1 = 0x88;
-        public static readonly byte EECON2 = 0x88;
+        public static readonly byte EECON2 = 0x89;
     }
 }
