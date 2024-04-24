@@ -7,7 +7,7 @@
         
         xmlns:viewmodel="clr-namespace:PIC16F8X.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="PIC16F8X Simulator" SizeToContent="WidthAndHeight" Margin="-2,0,0,0" ResizeMode="CanMinimize">
+        Title="PIC16F8X Simulator" SizeToContent="WidthAndHeight" Margin="-2,0,0,0" ResizeMode="CanMinimize" >
 
     <Window.Resources>
         <Style x:Key="FileRegisterTextBox" TargetType="TextBox">
@@ -70,16 +70,16 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
+                <Grid Grid.Row="0" RenderTransformOrigin="0.54,0.489" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <GroupBox Grid.Column="0" Header="SFR + W" MinWidth="2" MinHeight="100" Padding="5">
+                    <GroupBox Grid.Column="0" Header="SFR + W" MinWidth="200" MinHeight="100" Padding="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -224,14 +224,14 @@
                         </Grid>
                     </GroupBox>
 
-                    <Grid Grid.Column="2">
+                    <Grid Grid.Column="2" Width="auto">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <GroupBox Grid.Row="0" Header="Port A">
                             <StackPanel Orientation="Vertical">
-                                <DockPanel>
+                                <DockPanel Width="auto">
                                     <TextBlock VerticalAlignment="Center" Margin="10">Tris</TextBlock>
                                     <StackPanel  Name="TrisA" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <CheckBox x:Name="TrisA4" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding TrisA[4]}">4</CheckBox>
@@ -285,7 +285,7 @@
                         </GroupBox>
                     </Grid>
 
-                    <GroupBox  Grid.Column="3" Header="Stack" MinWidth="100" MinHeight="100px">
+                    <GroupBox  Grid.Column="3" Header="Stack" Width="50" MinHeight="100px">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" UseLayoutRounding="True">
                             <TextBlock Text="{Binding StackDisplay[0]}" Style="{StaticResource StackTextBlock}"/>
                             <TextBlock Text="{Binding StackDisplay[1]}" Style="{StaticResource StackTextBlock}"/>
@@ -372,8 +372,8 @@
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <GroupBox Grid.Column="0" Header="LST-File" Height="500" MinHeight="525" VerticalAlignment="Center" HorizontalAlignment="Left" Width="800">
