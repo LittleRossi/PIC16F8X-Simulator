@@ -37,7 +37,6 @@ KnownIssues:
 - TestDatei 7 => Error in Timer, der bis 16 zählen soll
 - TestDatei 12 => Was ist State-Maschine?
 - TestDatei 15 => Zeile 66 => RA0 Pegel ändert sich schon
-- TestDatei 101 => Out Of Bound
 
 PORTA Latch (TRISA) => Bei 0x05
 PORTB Latch (TRISB) => Bei 0x06

@@ -9,8 +9,6 @@ namespace PIC16F8X.DataModel
         readonly ObservableCollection<SourceLine> sourceLines = new ObservableCollection<SourceLine>();
 
 
-
-
         readonly int[] linesWithCommands;
         int LastHighlightedLineIndex;
         private LSTFile lSTFile;
@@ -19,15 +17,9 @@ namespace PIC16F8X.DataModel
         {
             int? lineIndexInPreview = null;
             int indexInProgrammStorage = 0;
-            // set initial values in sourceLines
-            for (int i = 0; i < 1024; i++)
-                sourceLines.Add(new SourceLine("", "", "", "", false, lineIndexInPreview));
 
             // create List of 1024 "0" inital
             List<string> hexadecimalCommand = Enumerable.Repeat("#", 1024).ToList();
-
-
-            //List<int> linesWithCommands = new List<int>(); //List of all indexes, that include a command
             List<int> linesWithCommands = Enumerable.Repeat(-1, 1024).ToList();
 
             string line;
@@ -94,17 +86,7 @@ namespace PIC16F8X.DataModel
                     // Add the current line to the sourceLines
                     SourceLine currentLine = new SourceLine(lineNumber, label, textCommand, comment, hasCommand, indexInProgrammStorage);
 
-
-                    if (hasCommand)
-                    {
-                        sourceLines.Insert((int)(lineIndexInPreview + indexInProgrammStorage), currentLine);
-                    }
-                    else
-                    {
-                        sourceLines.Insert((int)(lineIndexInPreview - 1), currentLine);
-                    }
-
-
+                    sourceLines.Add(currentLine);
                 }
             }
             file.Close();
