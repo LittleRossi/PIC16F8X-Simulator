@@ -26,13 +26,8 @@ Prescaler => Watchdog
 Postscalter => TMR0
 
 
-Testen:
-1 - 11 getestet
-13
-14
-
 Beim Testen von 11 => WatchDog an und BreakPoint auf PC: 0 erster Befehl
+Beim Testen von 7  => Bei Loop3 und 4 => Um timer hochzuzählen muss Fallende Flanke auf RA4 erzeugt werden!!! Durch Setzen und Rücksetzen von Checkbox
 
 KnownIssues:
-- TestDatei 7 => Error in Timer, der bis 16 zählen soll
 - TestDatei 12 => Was ist State-Maschine?
