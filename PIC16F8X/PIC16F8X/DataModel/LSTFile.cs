@@ -16,7 +16,7 @@ namespace PIC16F8X.DataModel
         public LSTFile(string path)
         {
             int? lineIndexInPreview = null;
-            int indexInProgrammStorage = 0;
+            int indexInProgrammStorage = -1;
 
             // create List of 1024 "0" inital
             List<string> hexadecimalCommand = Enumerable.Repeat("#", 1024).ToList();
@@ -100,6 +100,7 @@ namespace PIC16F8X.DataModel
 
         public void HighlightLine(int pc)
         {
+
             sourceLines[GetIndexInFileOfPCCommand(LastHighlightedLineIndex)].Active = false; //Set the current line to not active
 
             sourceLines[GetIndexInFileOfPCCommand(pc)].Active = true; // set the next line to active
@@ -111,8 +112,7 @@ namespace PIC16F8X.DataModel
         public int GetIndexInFileOfPCCommand(int pc)
         {
             // calculate the index in File by using the Linenumber
-
-            SourceLine line = sourceLines.FirstOrDefault(item => item.IndexInProgrammStorage == pc);
+            SourceLine line = sourceLines.First(item => item.IndexInProgrammStorage == pc);
 
             return sourceLines.IndexOf(line);
         }
