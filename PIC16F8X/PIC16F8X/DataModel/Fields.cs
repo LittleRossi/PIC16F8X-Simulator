@@ -64,14 +64,16 @@ namespace PIC16F8X.DataModel
 
             SetPrePostscalerRatio();
         }
-
+        public static void DirectRegisterManipulation(byte address, byte data)
+        {
+            register[Convert.ToInt16(address)] = data;
+        }
         public static void SetRegister(byte address, byte data)
         {
             // Set the data in the correct Register
 
             if (address != 0x05 || address != 0x06)         // Not for PORTA and PORTB because they need to be handled seperatly
                 register[Convert.ToInt16(address)] = data;
-
 
 
             //Handling special functions
@@ -589,6 +591,10 @@ namespace PIC16F8X.DataModel
             return program;
         }
 
+        public static void SetDataLatchA(byte data)
+        {
+            dataLatchA = data;
+        }
         public static int[] GetStack()
         {
             return stack;

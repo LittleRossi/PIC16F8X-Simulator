@@ -391,12 +391,18 @@ namespace PIC16F8X
         }
         private void PortAChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Fields.SetRegister(Registers.PORTA, HelpFunctions.ConvertBoolArrayToByte(View.PortA.ToArray<bool>()));
+
+            // Direct set of PORTA to avoid output Latch
+            Fields.DirectRegisterManipulation(0x5, HelpFunctions.ConvertBoolArrayToByte(View.PortA.ToArray<bool>()));
+            Fields.SetDataLatchA(HelpFunctions.ConvertBoolArrayToByte(View.PortA.ToArray<bool>()));
+
             UpdateUI();
         }
         private void PortBChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Fields.SetRegister(Registers.PORTB, HelpFunctions.ConvertBoolArrayToByte(View.PortB.ToArray<bool>()));
+            // Direct set of PORTB to avoid output Latch
+            Fields.DirectRegisterManipulation(0x6, HelpFunctions.ConvertBoolArrayToByte(View.PortB.ToArray<bool>()));
+            Fields.SetDataLatchA(HelpFunctions.ConvertBoolArrayToByte(View.PortB.ToArray<bool>()));
             UpdateUI();
         }
         #endregion

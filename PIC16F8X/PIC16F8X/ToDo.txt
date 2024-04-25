@@ -36,9 +36,3 @@ Beim Testen von 11 => WatchDog an und BreakPoint auf PC: 0 erster Befehl
 KnownIssues:
 - TestDatei 7 => Error in Timer, der bis 16 zählen soll
 - TestDatei 12 => Was ist State-Maschine?
-- TestDatei 15 => Zeile 66 => RA0 Pegel ändert sich schon sollte aber erst in 72
-
-PORTA Latch (TRISA) => Bei 0x05
-PORTB Latch (TRISB) => Bei 0x06
-
-=> Anschauen wie das geht
