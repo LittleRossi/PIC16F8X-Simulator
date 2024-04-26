@@ -6,6 +6,8 @@
 
 Wichtig:
 - Testdatei 9: ProcessWatchDogTimer(): (limit - 2303000) setzen, da man sonst unendlich wartet!!!
+- Beim Testen von 11 => WatchDog an und BreakPoint auf PC: 0 erster Befehl
+- Beim Testen von 7  => Bei Loop3 und 4 => Um timer hochzuzählen muss Fallende Flanke auf RA4 erzeugt werden!!! Durch Setzen und Rücksetzen von Checkbox
 
 
 
@@ -25,9 +27,6 @@ PSA Sagt ob WDT oder TMRO
 Prescaler => Watchdog
 Postscalter => TMR0
 
-
-Beim Testen von 11 => WatchDog an und BreakPoint auf PC: 0 erster Befehl
-Beim Testen von 7  => Bei Loop3 und 4 => Um timer hochzuzählen muss Fallende Flanke auf RA4 erzeugt werden!!! Durch Setzen und Rücksetzen von Checkbox
 
 KnownIssues:
 - TestDatei 12 => Was ist State-Maschine?
