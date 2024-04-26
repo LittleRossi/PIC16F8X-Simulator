@@ -345,8 +345,6 @@ namespace PIC16F8X.DataModel
         }
         #endregion
 
-
-
         #region LATCH
         private static void CheckIfWeNeedToUpdatePortA()
         {
