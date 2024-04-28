@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PIC16F8X.DataModel
 {
     public static class Fields
     {
         //ProgrammCode with List of Class Command
-        private static List<Command> program = new List<Command>();
+        private static List<Command> program = new List<Command>(1024);
 
         //Data Register
         private static byte[] register = new byte[256];
@@ -14,6 +15,10 @@ namespace PIC16F8X.DataModel
         private static int stackPointer;
         private static byte w;
         private static int pc;
+        private static byte trisALatch;
+        private static byte trisBLatch;
+        private static byte dataLatchA;
+        private static byte dataLatchB;
 
         // Status Variables
         private static decimal runtime, watchdog; //in ms
@@ -54,14 +59,22 @@ namespace PIC16F8X.DataModel
             SetRegister(Registers.OPTION, 0xFF); //Value on Power-on Reset: 1111 1111
             SetRegister(Registers.TRISA, 0x1F);  //Value on Power-on Reset: 0001 1111 => Setting PORTA I/O-Pins
             SetRegister(Registers.TRISB, 0xFF);  //Value on Power-on Reset: 1111 1111 => Setting PORTB I/O-Pins
+            trisALatch = 0x1F;
+            trisBLatch = 0xFF;
 
             SetPrePostscalerRatio();
         }
-
+        public static void DirectRegisterManipulation(byte address, byte data)
+        {
+            register[Convert.ToInt16(address)] = data;
+        }
         public static void SetRegister(byte address, byte data)
         {
             // Set the data in the correct Register
-            register[Convert.ToInt16(address)] = data;
+
+            if (address != 0x05 || address != 0x06)         // Not for PORTA and PORTB because they need to be handled seperatly
+                register[Convert.ToInt16(address)] = data;
+
 
             //Handling special functions
             switch (address)
@@ -86,23 +99,24 @@ namespace PIC16F8X.DataModel
                     break;
 
                 case 0x05:
-                    //ToDo: PORTA Latch (TRISA)
-
-                    // Prüfen wie TRISA gerade aussieht
-                    // Tris: 0 => Ausgang
-                    // Tris: 1 => Eingang
-
-                    // Wenn Bit 2 in Port A gesetzt werden soll
-                    // => prüfen ob 2. Bit in TrisA == 0
-                    // JA (0): Nichts machen, da bereits gesetzt
-                    // NEIN (1): PORTA auf 0 setzen
-
-
+                    CheckIfWeCanSetPortADependingOnTrisALatch(data); // Set PORTA Depending on TrisLatch
                     break;
+                case 0x85:
+                    trisALatch = data; // when writing to TRISA also set TRISA Latch
+                    CheckIfWeNeedToUpdatePortA(); // CHeck if we need to change PORTA
+                    break;
+
+
                 case 0x06:
-                    //ToDo: PORTB Latch (TRISB)
+                    CheckIfWeCanSetPortBDependingOnTrisBLatch(data); // Set PORTB Depending on TrisLatch
                     break;
+                case 0x86:
+                    trisBLatch = data; // when writing to TRISB also set TRISB Latch
+                    CheckIfWeNeedToUpdatePortB(); // CHeck if we need to change PORTB
 
+
+
+                    break;
                 case 0x0A: //PCLATH on bank0 and bank1
                     register[Convert.ToInt16(0x8A)] = data; //PCLATH address on bank1
                     break;
@@ -331,6 +345,62 @@ namespace PIC16F8X.DataModel
         }
         #endregion
 
+        #region LATCH
+        private static void CheckIfWeNeedToUpdatePortA()
+        {
+            // when TrisALatch Bit is 0 the result bit has to be the same as dataLatchA bit
+            // when TrisALatch Bit is 1 the result bit has to be 0
+            byte result = (byte)~(~dataLatchA | trisALatch);
+
+            // safe result in PORTA Register
+            register[Convert.ToInt16(0x05)] = result;
+        }
+        private static void CheckIfWeNeedToUpdatePortB()
+        {
+            // when TrisBLatch Bit is 0 the result bit has to be the same as dataLatchB bit
+            // when TrisBLatch Bit is 1 the result bit has to be 0
+            byte result = (byte)~(~dataLatchB | trisBLatch);
+
+            // safe result in PORTB Register
+            register[Convert.ToInt16(0x06)] = result;
+        }
+
+        private static void CheckIfWeCanSetPortADependingOnTrisALatch(byte newDataForPortA)
+        {
+
+            // befor seting PortA we need to check if TrisALatch is Input or Output
+
+            // Set dataLatch to new value
+            dataLatchA = newDataForPortA;
+
+
+            // when TrisALatch Bit is 0 the result bit has to be the same as dataLatchA bit
+            // when TrisALatch Bit is 1 the result bit has to be 0
+            byte result = (byte)~(~dataLatchA | trisALatch);
+
+
+            // safe result in PORTA Register
+            register[Convert.ToInt16(0x05)] = result;
+        }
+        private static void CheckIfWeCanSetPortBDependingOnTrisBLatch(byte newDataForPortB)
+        {
+
+            // befor seting PortB we need to check if TrisBLatch is Input or Output
+
+            // Set dataLatch to new value
+            dataLatchB = newDataForPortB;
+
+
+            // when TrisBLatch Bit is 0 the result bit has to be the same as dataLatchB bit
+            // when TrisBLatch Bit is 1 the result bit has to be 0
+            byte result = (byte)~(~dataLatchB | trisBLatch);
+
+
+            // safe result in PORTB Register
+            register[Convert.ToInt16(0x06)] = result;
+        }
+        #endregion
+
         #region Runtime
         public static void IncreaseRuntime()
         {
@@ -489,12 +559,27 @@ namespace PIC16F8X.DataModel
 
             if (commandList == null) throw new ArgumentNullException();
 
-            program = new List<Command>();
+
+            // Füllen mit instructions !!!!!!
+
+            // Erstellen einer Liste mit 1024 Commands mit 0 als High und Low Byte als Dummy
+
+            program = new List<Command>(1024);
+
+            for (int i = 0; i < 1024; i++)
+                program.Add(new Command("0000"));
+
+
+
+            //List<string> hexadecimalCommand = Enumerable.Repeat("#", 1024).ToList();
 
             for (int i = 0; i < commandList.Count; i++)
             {
-                Command line = new Command(commandList[i]);
-                program.Add(line);
+                if(commandList[i] != "#")
+                {
+                    Command line = new Command(commandList[i]);
+                    program.Insert(i, line);
+                }
             }
 
             ProgrammInitialized = true;
@@ -504,6 +589,10 @@ namespace PIC16F8X.DataModel
             return program;
         }
 
+        public static void SetDataLatchA(byte data)
+        {
+            dataLatchA = data;
+        }
         public static int[] GetStack()
         {
             return stack;

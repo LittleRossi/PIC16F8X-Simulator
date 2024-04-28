@@ -7,23 +7,29 @@ namespace PIC16F8X.DataModel
     class LSTFile
     {
         readonly ObservableCollection<SourceLine> sourceLines = new ObservableCollection<SourceLine>();
+
+
         readonly int[] linesWithCommands;
-        int LastHighlightedLineIndex = 0;
+        int LastHighlightedLineIndex;
         private LSTFile lSTFile;
 
         public LSTFile(string path)
         {
-            List<string> hexadecimalCommand = new List<string>();
-            List<int> linesWithCommands = new List<int>(); //List of all indexes, that include a command
+            int? lineIndexInPreview = null;
+            int indexInProgrammStorage = -1;
+
+            // create List of 1024 "0" inital
+            List<string> hexadecimalCommand = Enumerable.Repeat("#", 1024).ToList();
+            List<int> linesWithCommands = Enumerable.Repeat(-1, 1024).ToList();
 
             string line;
-            int lineCounter = 0; //Index of Commands in List
 
 
             System.IO.StreamReader file = new System.IO.StreamReader(@path, System.Text.Encoding.UTF8);
 
             while ((line = file.ReadLine()) != null)
             {
+
                 // Check if line contains a comment
                 string comment = "";
                 string[] lineCommentSplit = line.Split(";");
@@ -41,10 +47,8 @@ namespace PIC16F8X.DataModel
 
                 if (label != "") hasLabel = true;
 
-
                 // Split the lines into every part and removing all dublicated whitespaces
                 string[] lineComponents = line.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
-
 
 
                 // Check if the line contains a hexadecimal Command
@@ -52,10 +56,18 @@ namespace PIC16F8X.DataModel
 
                 if (!char.IsWhiteSpace(line, 0)) //Lines with a Command always start with a character as first char
                 {
-                    hexadecimalCommand.Add(lineComponents[1]); // the actual hexadecimal command is in the second row
+                    // calculate the index of the command in the programm Storage
+                    indexInProgrammStorage = System.Convert.ToInt32(lineComponents[0], 16);
+
+                    hexadecimalCommand.Insert(indexInProgrammStorage, lineComponents[1]); // the actual hexadecimal command is in the second row
                     lineComponents = lineComponents.Skip(2).ToArray(); // Skipt the first two parts, because we already parsed them
-                    linesWithCommands.Add(lineCounter); // add the index of the line with a command
+                    linesWithCommands.Insert(indexInProgrammStorage, indexInProgrammStorage); // add the index of the line with a command
                     hasCommand = true;
+                }
+
+                if (char.IsWhiteSpace(line, 0))
+                {
+                    lineIndexInPreview = System.Convert.ToInt32(lineComponents[0]);
                 }
 
 
@@ -72,10 +84,10 @@ namespace PIC16F8X.DataModel
                     }
 
                     // Add the current line to the sourceLines
-                    SourceLine currentLine = new SourceLine(lineNumber, label, textCommand, comment, hasCommand);
+                    SourceLine currentLine = new SourceLine(lineNumber, label, textCommand, comment, hasCommand, indexInProgrammStorage);
+
                     sourceLines.Add(currentLine);
                 }
-                lineCounter++;
             }
             file.Close();
 
@@ -88,9 +100,21 @@ namespace PIC16F8X.DataModel
 
         public void HighlightLine(int pc)
         {
-            sourceLines[GetSourceLineIndexFromPC(LastHighlightedLineIndex)].Active = false; //Set the current line to not active
-            sourceLines[GetSourceLineIndexFromPC(pc)].Active = true; // set the next line to active
+
+            sourceLines[GetIndexInFileOfPCCommand(LastHighlightedLineIndex)].Active = false; //Set the current line to not active
+
+            sourceLines[GetIndexInFileOfPCCommand(pc)].Active = true; // set the next line to active
+
             LastHighlightedLineIndex = pc;
+        }
+
+
+        public int GetIndexInFileOfPCCommand(int pc)
+        {
+            // calculate the index in File by using the Linenumber
+            SourceLine line = sourceLines.First(item => item.IndexInProgrammStorage == pc);
+
+            return sourceLines.IndexOf(line);
         }
         
         public ObservableCollection<SourceLine> GetSourceLines()
@@ -101,13 +125,13 @@ namespace PIC16F8X.DataModel
         public int GetSourceLineIndexFromPC(int pc)
         {
             // We need to check that, because there can be lines without commands
-            if (pc < linesWithCommands.Length) return linesWithCommands[pc]; 
+            if (pc < linesWithCommands.Max()) return linesWithCommands[pc]; 
             else return -1;
         }
 
         public bool LineHasBreakpoint(int pc)
         {
-            return sourceLines[GetSourceLineIndexFromPC(pc)].Breakpoint; //Return if a line has a breakpoint
+            return sourceLines[GetIndexInFileOfPCCommand(pc)].Breakpoint; //Return if a line has a breakpoint
         }
     }
 
@@ -115,6 +139,7 @@ namespace PIC16F8X.DataModel
 
     class SourceLine : ObservableObject
     {
+        public int? IndexInProgrammStorage { get; set; }
         public string LineNumber { get; set; }
         public string Label { get; set; }
         public string Command { get; set; }
@@ -137,8 +162,9 @@ namespace PIC16F8X.DataModel
             set { SetAndNotify(ref breakpoint, value, () => Breakpoint); }
         }
 
-        public SourceLine (string lineNumber, string label, string command, string comment, bool hasCommand)
+        public SourceLine (string lineNumber, string label, string command, string comment, bool hasCommand, int? indexInProgrammStorage)
         {
+            IndexInProgrammStorage = indexInProgrammStorage;
             breakpoint = false; //default we dont have a breakpoint by reading the file, breakpoints get set in the UI
             LineNumber = lineNumber;
             Label = label;

@@ -6,6 +6,8 @@
 
 Wichtig:
 - Testdatei 9: ProcessWatchDogTimer(): (limit - 2303000) setzen, da man sonst unendlich wartet!!!
+- Beim Testen von 11 => WatchDog an und BreakPoint auf PC: 0 erster Befehl
+- Beim Testen von 7  => Bei Loop3 und 4 => Um timer hochzuzählen muss Fallende Flanke auf RA4 erzeugt werden!!! Durch Setzen und Rücksetzen von Checkbox
 
 
 
@@ -26,20 +28,5 @@ Prescaler => Watchdog
 Postscalter => TMR0
 
 
-Testen:
-1 - 11 getestet
-13
-14
-
-Beim Testen von 11 => WatchDog an und BreakPoint auf PC: 0 erster Befehl
-
 KnownIssues:
-- TestDatei 7 => Error in Timer, der bis 16 zählen soll
 - TestDatei 12 => Was ist State-Maschine?
-- TestDatei 15 => Zeile 66 => RA0 Pegel ändert sich schon
-- TestDatei 101 => Out Of Bound
-
-PORTA Latch (TRISA) => Bei 0x05
-PORTB Latch (TRISB) => Bei 0x06
-
-=> Anschauen wie das geht

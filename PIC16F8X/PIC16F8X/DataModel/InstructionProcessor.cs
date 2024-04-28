@@ -303,18 +303,20 @@ namespace PIC16F8X.DataModel
         }
         public static void CALL(Command com)
         {
-            byte k1 = com.GetLowByte();
-            byte k2 = (byte)(com.GetHighByte() & 7);
 
-            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2);
+            byte k1 = com.GetLowByte();
+            byte k2 = (byte)(com.GetHighByte() & 7); // Select first three HighByte bits
+
+            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2); // Extract PCLATH<4:3> and add it to three HighBits
+
 
             // push current PC on Stack
             Fields.PushOnStack();
             // set PC with PCLATH
-            Fields.SetPCFromBytes(all, k1);
+            Fields.SetPCFromBytes(all, k1); // Put together the parts of PC Value; LittleEndian, (lowbyte first, then highbyte) all is HighByte and k1 is LowByte
             Fields.SetPCLfromPC();
 
-            SkipOneCycle();
+            SkipOneCycle(); // because CALL is a two Cycle instruction
         }
         public static void CLRWDT(Command? com)
         {
@@ -333,12 +335,12 @@ namespace PIC16F8X.DataModel
             byte k1 = com.GetLowByte();
             byte k2 = (byte)(com.GetHighByte() & 7);
 
-            // Get upper 5 bits of PCL
+            // Get upper 2 bits of PCL
             byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2);
 
             Fields.SetPCFromBytes(all, k1);
             Fields.SetPCLfromPC();
-            SkipOneCycle();
+            SkipOneCycle(); // because GOTO is a two Cycle instruction
         }
         public static void IORLW(Command com)
         {
