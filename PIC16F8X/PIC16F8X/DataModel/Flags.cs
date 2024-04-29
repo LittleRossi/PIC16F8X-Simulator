@@ -41,6 +41,15 @@
             public static readonly int GIE = 7;
         }
 
+        public static class EECON1
+        {
+            public static readonly int EEIF = 4;
+            public static readonly int WRERR = 3;
+            public static readonly int WREN = 2;
+            public static readonly int WR = 1;
+            public static readonly int RD = 0;
+        }
+
         public static void CheckZFlag(byte res)
         {
             // Check if result of operation is 0

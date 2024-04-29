@@ -62,6 +62,9 @@ namespace PIC16F8X.DataModel
             trisALatch = 0x1F;
             trisBLatch = 0xFF;
 
+            EEPROM.LoadDataFromEEPROM(); // Load EEPROM Data from File
+            SetRegister(Registers.EEDATA, EEPROM.GetEEPROMData()); // Set EEPROM in Register
+
             SetPrePostscalerRatio();
         }
         public static void DirectRegisterManipulation(byte address, byte data)
@@ -140,6 +143,17 @@ namespace PIC16F8X.DataModel
                 case 0x84: //FSR on bank1
                     register[Convert.ToInt16(0x04)] = data;
                     break;
+
+                case 0x88: //EECON Register
+
+                    // We need to check if the WR Bit is set
+                    // when its set, we need to start the Timer
+                    if (Convert.ToInt32(data) == 6) // for WREN and WR-Bit
+                    {
+                        EEPROM.SetEEPROMTimerEnabled(true); // Sets TimerBool to true => Timer now gets incremented
+                        EEPROM.WriteEEDATAtoEEPROM(); // Writes the Data of EEDATA to EEPROM file
+                    }
+                    break;
                 case 0x8A: //PCLATH on bank1
                     register[Convert.ToInt16(0x0A)] = data;
                     break;
@@ -155,11 +169,16 @@ namespace PIC16F8X.DataModel
         }
         public static byte GetRegister(byte address)
         {
-            return address switch
+            switch (address)
             {
-                0x00 => register[GetRegister(Registers.FSR)], //0x00 is INDF Register and uses content of FSR
-                _ => register[Convert.ToInt16(address)], //when address is not 0x00
-            };
+                case 0x00:
+                    return register[GetRegister(Registers.FSR)];
+                case 0x08:
+                    EEPROM.LoadDataFromEEPROM(); // if we want to access the data of the EEPROM we first need to load it from the file
+                    return register[Convert.ToInt16(address)];
+                default:
+                    return register[Convert.ToInt16(address)];
+            }
         }
         public static bool GetRegisterBit(byte address, int bit)
         {
@@ -405,7 +424,17 @@ namespace PIC16F8X.DataModel
         public static void IncreaseRuntime()
         {
             // Increase the Runtime of the amount of one Execution
-            runtime += GetSingleExecutionTime();
+            runtime += GetSingleExecutionTime(); // calculate the ExecutionTime for the current clockspeed
+
+
+            // Check if we need to increment the EEPROM Timer
+            if (EEPROM.CheckIfEEPROMTimerIsEnabled())
+            {
+                // EEPROM Timer is enabled so we need to increment it
+                // Increment the timer about the time of one execution
+                // also check if timer reached limit and if so, set EEIF Flag and EEPROMTimerEnabled bool
+                EEPROM.IncrementEEPROMTimerAndCheckForReachingLimit(GetSingleExecutionTime());
+            }
         }
 
         private static long GetSingleExecutionTime()
