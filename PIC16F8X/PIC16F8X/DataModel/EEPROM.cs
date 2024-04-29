@@ -9,7 +9,6 @@ namespace PIC16F8X.DataModel
         private static long EEPROMWriteTimer;
         private static bool EEPROMTimerEnabled;
 
-
         #region EEPROM-File actions
         public static void WriteDataToEEPROM(byte[] data)
         {
@@ -23,7 +22,6 @@ namespace PIC16F8X.DataModel
             EEPROMData = File.ReadAllBytes(@".\EEPROM_DATA.txt");
         }
         #endregion
-
 
         public static void WriteEEDATAtoEEPROM()
         {
@@ -39,8 +37,6 @@ namespace PIC16F8X.DataModel
             // Write Data to actual EEPROM
             WriteDataToEEPROM(EEPROMData);
         }
-
-
         public static void IncrementEEPROMTimerAndCheckForReachingLimit(long value)
         {
             InkrementEEPROMTimer(value);
@@ -52,38 +48,35 @@ namespace PIC16F8X.DataModel
                 ResetEEPROMTimer(); // set Timer to 0
             }
         }
-
-
-        public static void SetWriteProcessCompletedFlag()
-        {
-            // sets the EEIF-Bit in EECON1 Register, that indicates that the Write process is completed
-            Fields.SetSingleRegisterBit(Registers.EECON1, Flags.EECON1.EEIF, true);
-        }
-
-
-
+        
         public static void InkrementEEPROMTimer(long value)
         {
             EEPROMWriteTimer += value;
         }
-
         public static void ResetEEPROMTimer()
         {
             EEPROMWriteTimer = 0;
-        }
-        public static void SetEEPROMTimerEnabled(bool status)
-        {
-            EEPROMTimerEnabled = status;
         }
         public static bool CheckIfEEPROMTimerIsEnabled()
         {
             return EEPROMTimerEnabled;
         }
 
+        #region Getter and Setter
         public static byte GetEEPROMData()
         {
             //return the data in EEPROM on the current EEADR index
             return EEPROMData[Convert.ToInt32(Fields.GetRegister(Registers.EEADR))];
         }
+        public static void SetEEPROMTimerEnabled(bool status)
+        {
+            EEPROMTimerEnabled = status;
+        }
+        public static void SetWriteProcessCompletedFlag()
+        {
+            // sets the EEIF-Bit in EECON1 Register, that indicates that the Write process is completed
+            Fields.SetSingleRegisterBit(Registers.EECON1, Flags.EECON1.EEIF, true);
+        }
+        #endregion
     }
 }

@@ -54,6 +54,8 @@ namespace PIC16F8X.DataModel
             runtime = 0;
             watchdog = 0;
 
+            EEPROM.ResetEEPROMTimer(); // Reset the EEPROM Timer
+
             // the Power-On Reset values are from the datasheet
             SetRegister(Registers.STATUS, 0x18); //Value on Power-on Reset: 0001 1000
             SetRegister(Registers.OPTION, 0xFF); //Value on Power-on Reset: 1111 1111
