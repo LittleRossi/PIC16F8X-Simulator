@@ -7,10 +7,10 @@ namespace PIC16F8X.DataModel
     public static class Fields
     {
         //ProgrammCode with List of Class Command
-        private static List<Command> program = new List<Command>(1024);
+        private static List<Command> program = new List<Command>(1024); // programmstorage
 
         //Data Register
-        private static byte[] register = new byte[256];
+        private static byte[] register = new byte[256]; // datastorage bank0 and bank1 each 128 addresses so in sum 256
         private static int[] stack = new int[8];
         private static int stackPointer;
         private static byte w;

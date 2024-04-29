@@ -19,14 +19,3 @@ Doku:
 - Fileregister wird nur alle 1 Sekunde aktualisiert
 - Highlight auf Command zeigt den, der als nächstes ausgeführt wird
 
-- WPF erklären
-1 : 4 => jeder 4. Befehlstakt wird Timer erhöht
-post- und prescaler erläutern
-PSA Sagt ob WDT oder TMRO
-
-Prescaler => Watchdog
-Postscalter => TMR0
-
-
-KnownIssues:
-- TestDatei 12 => Was ist State-Maschine?
