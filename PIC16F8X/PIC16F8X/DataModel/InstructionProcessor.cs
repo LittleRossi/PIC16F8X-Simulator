@@ -266,7 +266,7 @@ namespace PIC16F8X.DataModel
             if (Fields.GetRegisterBit(Fields.BankAddressResolution(f), b) == false)
             {
                 Fields.IncreasePC();
-                SkipOneCycle();
+                SkipOneCycle(); // if we skip, its a 2 cycle instruction
             }
         }
         public static void BTFSS(Command com)
@@ -279,7 +279,7 @@ namespace PIC16F8X.DataModel
             if (Fields.GetRegisterBit(Fields.BankAddressResolution(f), b) == true)
             {
                 Fields.IncreasePC();
-                SkipOneCycle();
+                SkipOneCycle(); // if we skip, its a 2 cycle instruction
             }
         }
 
