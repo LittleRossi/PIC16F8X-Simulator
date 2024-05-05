@@ -284,7 +284,7 @@ namespace PIC16F8X
             {
                 for (int j = 0; j < 16; j++)
                 {
-                    data[i, j] = Fields.GetAllRegister()[index++].ToString("X2");
+                    data[i, j] = Fields.GetAllRegister()[index++].ToString("X2"); // "X2" converts to 2 Uppercase Hexadezimal
                 }
             }
 

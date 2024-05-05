@@ -174,7 +174,7 @@ namespace PIC16F8X.DataModel
             switch (address)
             {
                 case 0x00:
-                    return register[GetRegister(Registers.FSR)];
+                    return register[GetRegister(Registers.FSR)]; // if we address the INDF Register => uses the Register address in FSR
                 case 0x08:
                     EEPROM.LoadDataFromEEPROM(); // if we want to access the data of the EEPROM we first need to load it from the file
                     return register[Convert.ToInt16(address)];
@@ -345,7 +345,7 @@ namespace PIC16F8X.DataModel
                 watchdog += GetSingleExecutionTime();
                 int limit = watchdogLimit;
 
-                if (GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == true) // Assigned to WatchDogTimer
+                if (GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == true) // PrePostscaler Assigned to WatchDogTimer
                 {
                     // calculate Limit with current PreScaler limit
                     limit *= GetPrePostScalerRatio();
@@ -472,7 +472,7 @@ namespace PIC16F8X.DataModel
             // Push the current PC on Stack
             PushOnStack();
 
-            // Set PC on interrupt routine address
+            // Set PC on interrupt routine address (ISR)
             SetPC(0x04);
 
             // disable Interrupts
@@ -528,8 +528,11 @@ namespace PIC16F8X.DataModel
             // the condition for an TMR0 Interrupt are out of the datasheet
             if
             (
-                GetRegisterBit(Registers.OPTION, Flags.Option.T0CS) == false || // internal clock source
+            // T0SE-Bit decides if falling or rising Flank counts => 1: high to low, 0: low to high
+                GetRegisterBit(Registers.OPTION, Flags.Option.T0CS) == false || // internal clock source => if 0: timer is activated
                 GetRegisterBit(Registers.OPTION, Flags.Option.T0SE) && RA4 < RA4TimerLastState || // external Clock source RA4 and falling flank 
+
+                // Only for rising Flank, when T0SE-Bit is 0
                 !GetRegisterBit(Registers.OPTION, Flags.Option.T0SE) && RA4 > RA4TimerLastState   // external Clock source RA4 and rising flank
             )
             {
@@ -538,7 +541,7 @@ namespace PIC16F8X.DataModel
                 if (GetRegisterBit(Registers.OPTION, Flags.Option.PSA) == false) // the prescaler is assigned to to TMR0
                 {
                     prePostscaler++;
-                    if (prePostscaler >= GetPrePostScalerRatio())
+                    if (prePostscaler >= GetPrePostScalerRatio()) // Check if we reached the "limit" a.e.: 1:4 => check if we reached 4 (4 cycles)
                     {
                         ResetPrePostScaler();
                         increment = true;

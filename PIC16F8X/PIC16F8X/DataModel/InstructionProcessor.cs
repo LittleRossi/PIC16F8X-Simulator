@@ -307,7 +307,7 @@ namespace PIC16F8X.DataModel
             byte k1 = com.GetLowByte();
             byte k2 = (byte)(com.GetHighByte() & 7); // Select first three HighByte bits
 
-            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2); // Extract PCLATH<4:3> and add it to three HighBits
+            byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2); // Extract PCLATH<4:3> and add it to three HighBits PC<12:11>
 
 
             // push current PC on Stack
@@ -374,15 +374,15 @@ namespace PIC16F8X.DataModel
             Fields.SetRegisterW(k);
 
             //Set PC to TopOfStack
-            Fields.SetPC(Fields.PopStack());
-            Fields.SetPCLfromPC();
+            Fields.SetPC(Fields.PopStack());  // Get PC from Stack ans set it
+            Fields.SetPCLfromPC(); // Set PCL to keep pcl synced with local PC
             SkipOneCycle();
         }
         public static void RETURN(Command com)
         {
             // Set PC to TopOfStack
-            Fields.SetPC(Fields.PopStack());
-            Fields.SetPCLfromPC();
+            Fields.SetPC(Fields.PopStack()); // Get PC from Stack ans set it
+            Fields.SetPCLfromPC(); // Set PCL to keep pcl synced with local PC
             SkipOneCycle();
         }
         public static void SLEEP(Command com)
