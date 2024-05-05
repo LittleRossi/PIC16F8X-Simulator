@@ -307,6 +307,7 @@ namespace PIC16F8X.DataModel
             byte k1 = com.GetLowByte();
             byte k2 = (byte)(com.GetHighByte() & 7); // Select first three HighByte bits
 
+            // Get PCLATH<4:3> and add it to => PC<12:11> we select PCLATH<4:3> (000x x000) we can simply add it together cuz k2 is: 0000 0xxx
             byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2); // Extract PCLATH<4:3> and add it to three HighBits PC<12:11>
 
 
@@ -335,7 +336,7 @@ namespace PIC16F8X.DataModel
             byte k1 = com.GetLowByte();
             byte k2 = (byte)(com.GetHighByte() & 7);
 
-            // Get upper 2 bits of PCL
+            // Get PCLATH<4:3> and add it to => PC<12:11> we select PCLATH<4:3> (000x x000) we can simply add it together cuz k2 is: 0000 0xxx
             byte all = (byte)((Fields.GetRegister(Registers.PCLATH) & 24) + k2);
 
             Fields.SetPCFromBytes(all, k1);
