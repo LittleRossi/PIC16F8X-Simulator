@@ -463,7 +463,7 @@ namespace PIC16F8X.DataModel
                         Fields.IncreasePC();
                     }
                 }
-                SkipOneCycle();
+                SkipOneCycle(); // Process Interrupts, increase Runtime etc.
             }
         }
         #endregion

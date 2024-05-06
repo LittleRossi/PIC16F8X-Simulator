@@ -43,7 +43,6 @@ namespace PIC16F8X
         }
 
 
-
         #region RunTime functions
         private void RunTimerEvent(object source, ElapsedEventArgs e)
         {
@@ -99,8 +98,6 @@ namespace PIC16F8X
             }
         }
         #endregion
-
-
 
         #region User interaction functions
         private void MenuOpen_Click(object sender, RoutedEventArgs e)
@@ -159,7 +156,6 @@ namespace PIC16F8X
             UpdateUI();
         }
         #endregion
-
 
         #region Textbox functions
         private void TextBlock_StatusBitChange(object sender, MouseButtonEventArgs e)

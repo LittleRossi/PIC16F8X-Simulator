@@ -65,8 +65,6 @@ namespace PIC16F8X.DataModel
             trisBLatch = 0xFF;
 
             EEPROM.LoadDataFromEEPROM(); // Load EEPROM Data from File
-            SetRegister(Registers.EEDATA, EEPROM.GetEEPROMData()); // Set EEPROM in Register
-
             SetPrePostscalerRatio();
         }
         public static void DirectRegisterManipulation(byte address, byte data)
@@ -557,7 +555,7 @@ namespace PIC16F8X.DataModel
                     byte tmr0 = (byte)(GetRegister(Registers.TRM0) + 1); // Increment the TMR0 Register
                     register[Registers.TRM0] = tmr0; // direct access to register to avoid a prescaler reset
 
-                    if (tmr0 == 0)
+                    if (tmr0 == 0) // overflow
                     {
                         SetSingleRegisterBit(Registers.INTCON, Flags.Intcon.T0IF, true);
                     }

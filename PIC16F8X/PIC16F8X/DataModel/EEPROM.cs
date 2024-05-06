@@ -23,6 +23,8 @@ namespace PIC16F8X.DataModel
         }
         #endregion
 
+        #region EEPROM Timer and Data
+
         public static void WriteEEDATAtoEEPROM()
         {
             // Gets the Address, where in EEPROM the data should be stored
@@ -30,6 +32,10 @@ namespace PIC16F8X.DataModel
 
             // Gets the data, that should be written in EEPROM
             byte EEDATA = Fields.GetRegister(Registers.EEDATA);
+
+            EEPROMData = new byte[64];
+
+            var foo = Convert.ToInt16(EEADR);
 
             // Set the data of EEDATA to EEPROM
             EEPROMData[Convert.ToInt16(EEADR)] = EEDATA;
@@ -62,12 +68,15 @@ namespace PIC16F8X.DataModel
             return EEPROMTimerEnabled;
         }
 
+        #endregion
+
         #region Getter and Setter
-        public static byte GetEEPROMData()
-        {
-            //return the data in EEPROM on the current EEADR index
-            return EEPROMData[Convert.ToInt32(Fields.GetRegister(Registers.EEADR))];
-        }
+        //public static byte GetEEPROMData()
+        //{
+        //    var index = Convert.ToInt32(Fields.GetRegister(Registers.EEADR));
+        //    //return the data in EEPROM on the current EEADR index
+        //    return EEPROMData[index];
+        //}
         public static void SetEEPROMTimerEnabled(bool status)
         {
             EEPROMTimerEnabled = status;

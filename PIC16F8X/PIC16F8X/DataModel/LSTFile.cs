@@ -134,7 +134,6 @@ namespace PIC16F8X.DataModel
             return sourceLines[GetIndexInFileOfPCCommand(pc)].Breakpoint; //Return if a line has a breakpoint
         }
     }
-
     
 
     class SourceLine : ObservableObject
